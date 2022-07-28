@@ -89,3 +89,23 @@ class BEQop(BInstruction):
 
         # if register_file[rs1] == register_file[rs2]:
         #     pc += imm
+
+class BNEop(BInstruction):
+    def __init__(self, rs1, rs2, imm, pc=0):
+        super().__init__(op=0b1100011, funct3=0b001, rs1=rs1, rs2=rs2, imm=imm)
+
+class BLTop(BInstruction):
+    def __init__(self, rs1, rs2, imm, pc=0):
+        super().__init__(op=0b1100011, funct3=0b100, rs1=rs1, rs2=rs2, imm=imm)
+
+class BGEop(BInstruction):
+    def __init__(self, rs1, rs2, imm, pc=0):
+        super().__init__(op=0b1100011, funct3=0b101, rs1=rs1, rs2=rs2, imm=imm)
+
+class BLTUop(BInstruction):
+    def __init__(self, rs1, rs2, imm, pc=0):
+        super().__init__(op=0b1100011, funct3=0b110, rs1=rs1, rs2=rs2, imm=imm)
+
+class BGEUop(BInstruction):
+    def __init__(self, rs1, rs2, imm, pc=0):
+        super().__init__(op=0b1100011, funct3=0b111, rs1=rs1, rs2=rs2, imm=imm)

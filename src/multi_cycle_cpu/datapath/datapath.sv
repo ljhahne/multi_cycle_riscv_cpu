@@ -14,7 +14,10 @@ module datapath #(parameter WIDTH = 32)(  input  logic       clk,
             input logic [31:0] ReadData, //Memory
             output logic [31:0] DataAdr, //Memory
             output logic [31:0] WriteData, //Memory
-            output logic      Zero,
+            output logic N,
+            output logic Z,
+            output logic C,
+            output logic V,
             output logic [31:0] Instr
                                            );
 
@@ -88,7 +91,10 @@ module datapath #(parameter WIDTH = 32)(  input  logic       clk,
             .b(SrcB), 
             .alucontrol(ALUControl), 
             .result(ALUResult), 
-            .zero(Zero)
+            .N(N), 
+            .Z(Z), 
+            .C(C), 
+            .V(V)
         );
 
     flop #(WIDTH) aluOutReg(

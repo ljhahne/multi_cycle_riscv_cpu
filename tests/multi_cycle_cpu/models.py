@@ -1,7 +1,7 @@
 from bitstring import Bits
 
 from tests.multi_cycle_cpu.defs import XDEF, ALUControl, ImmSrc, Op, States
-
+from tests.instructions.sb_instruction import BEQop, BNEop, BLTop, BGEop, BLTUop, BGEUop
 
 def state_register(state_next, reset):
     if reset:
@@ -317,8 +317,33 @@ def alu_control(opb5, funct3, funct7b5, ALUOp):
     return ALUControl.X
 
 
-def pc_write(Zero, Branch, PCUpdate):
-    return (Zero & Branch) | PCUpdate
+def pc_write(funct3, N, Z, C, V, Branch, PCUpdate):
+    branch_alu = 0
+
+
+    # since we check only control signals, we are not interested in labales and registers and set them to 0
+    if funct3 == BEQop(0, 0, 0).get_funct3():
+        branch_alu = Z
+
+    elif funct3 == BNEop(0, 0, 0).get_funct3():
+        branch_alu = bitwise_not(Z, 1)
+
+    elif funct3 == BLTop(0, 0, 0).get_funct3():
+        branch_alu = N | V
+
+    elif funct3 == BGEop(0, 0, 0).get_funct3():
+        branch_alu = bitwise_not(N | V, 1)
+
+    elif funct3 == BLTUop(0, 0, 0).get_funct3():
+        branch_alu = bitwise_not(C, 1)
+
+    elif funct3 == BGEUop(0, 0, 0).get_funct3():
+        branch_alu = C
+
+    print("branch_alu {}".format(branch_alu))
+    print("(branch_alu & Branch) | PCUpdate {}".format((branch_alu & Branch) | PCUpdate))
+
+    return (branch_alu & Branch) | PCUpdate
 
 
 def opb5(op):
@@ -434,9 +459,14 @@ def instruction_immext_j(bit_31: int, bits_30_21: int, bit_20: int, bits_19_12: 
 
     return instruction.uint
 
-
+# def bitwise_not(a):
+#     return 1 ^ a
+#
 def bitwise_not(value, N):
     return value ^ int("0b" + "1" * N, 2)
+
+
+
 
 
 def alu(a: int, b: int, alucontrol: ALUControl, N=32):
@@ -470,6 +500,33 @@ def alu(a: int, b: int, alucontrol: ALUControl, N=32):
 
     # cut off overflows : bits in result which are at the N + ith position are ignored
     return result, zero
+
+
+def alu_flags(a, b, alucontrol):
+    result, Z = alu(a, b, alucontrol)
+
+    alucontrol_b = Bits(uint=alucontrol, length=3)
+
+    if alucontrol_b[-1]:
+        b = bitwise_not(b, 32) + 1
+
+    sum = a + b
+
+    sum_b = Bits(uint=sum, length=33)
+    C_out = sum_b[0]
+    sum_31 = sum_b[1]
+
+    a_31 = Bits(uint=a, length=32)[0]
+    b_31 = Bits(uint=b, length=32)[0]
+
+    alucontrol_0 = alucontrol_b[-1]
+    alucontrol_1_not = (~alucontrol_b)[-2]
+
+    C = C_out & alucontrol_1_not
+    V = int(bitwise_not(alucontrol_0 ^ a_31 ^ b_31, 1) & (a_31 ^ sum_31) & (alucontrol_1_not ^ a_31 ^ b_31))
+    N = int(Bits(uint=result, length=32)[0])
+
+    return N, Z, C, V
 
 
 def flopr(d, reset, init_state=False):
