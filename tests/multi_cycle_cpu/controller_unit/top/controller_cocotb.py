@@ -1,9 +1,9 @@
 import os
 
+import cocotb
 from cocotb.clock import Clock
 from cocotb.triggers import RisingEdge, Timer
 
-import cocotb
 from tests.common import check_value
 from tests.multi_cycle_cpu.models import alu_control as model_alu_control
 from tests.multi_cycle_cpu.models import fsm as model_fsm

@@ -1,8 +1,8 @@
 import os
 
+import cocotb
 from cocotb.triggers import Timer
 
-import cocotb
 from tests.common import check_value
 
 

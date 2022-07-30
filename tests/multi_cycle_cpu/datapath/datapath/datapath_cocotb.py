@@ -1,10 +1,10 @@
 import operator
 import os
 
+import cocotb
 from cocotb.clock import Clock
 from cocotb.triggers import RisingEdge, Timer
 
-import cocotb
 from tests.common import check_value
 from tests.multi_cycle_cpu.common import datapath_tests, memory_tests, register_tests
 from tests.multi_cycle_cpu.common.dut import reset_dut
@@ -14,7 +14,6 @@ from tests.multi_cycle_cpu.models import fsm as model_fsm
 from tests.multi_cycle_cpu.models import get_rd, get_rs1, get_rs2, opb5, output_logic
 from tests.multi_cycle_cpu.models import pc_write as model_pc_write
 from tests.multi_cycle_cpu.models import signExtend
-
 
 
 async def assign_dut_state(
@@ -50,10 +49,14 @@ async def assign_dut_state(
     ALUControl = model_alu_control(opb5(op), funct3, funct7b5, aluOP)
 
     if rd1 is not None and rd2 is not None:
-        PCWrite = model_pc_write(funct3=funct3, N = 0, Z = 1, C = 0, V = 0, Branch=Branch, PCUpdate=PCUpdate)
+        PCWrite = model_pc_write(
+            funct3=funct3, N=0, Z=1, C=0, V=0, Branch=Branch, PCUpdate=PCUpdate
+        )
 
     else:
-        PCWrite = model_pc_write(funct3=funct3, N = 0, Z = 0, C = 0, V = 0, Branch=Branch, PCUpdate=PCUpdate)
+        PCWrite = model_pc_write(
+            funct3=funct3, N=0, Z=0, C=0, V=0, Branch=Branch, PCUpdate=PCUpdate
+        )
 
     if read_data_override is not None:
         ReadData = read_data_override
@@ -182,12 +185,9 @@ def test_memread(dut, memory, DataAdr):
     return rd
 
 
-
 def test_beq(dut, branch_target_address, zero):
     check_value(dut.pcReg.q, branch_target_address if zero else 4)
     check_value(dut.alu.zero, zero)
-
-
 
 
 def set_register_content(dut, registerfile, instruction, rd1, rd2):
@@ -214,7 +214,9 @@ async def setup_init_state(dut, op, funct3, funct7b5, ImmSrc, instruction):
         Branch,
     ) = output_logic(States.S_FETCH)
 
-    PCWrite = model_pc_write(funct3=0, N=0, Z=0, C=0, V=0, Branch=Branch, PCUpdate=PCUpdate)
+    PCWrite = model_pc_write(
+        funct3=0, N=0, Z=0, C=0, V=0, Branch=Branch, PCUpdate=PCUpdate
+    )
     ALUControl = model_alu_control(opb5(op), funct3, funct7b5, aluOP)
 
     await assign_vars(
@@ -233,6 +235,7 @@ async def setup_init_state(dut, op, funct3, funct7b5, ImmSrc, instruction):
     )
 
     await reset_dut(dut)
+
 
 async def setup_test(dut, period_ns):
     op, funct3, funct7b5, ImmSrc, instruction = read_vars()
@@ -256,24 +259,44 @@ async def setup_test(dut, period_ns):
     pc = 0
     reset = True
 
-    return op, funct3, funct7b5, ImmSrc, instruction, registerfile, memory, fsm_states, pc, reset
+    return (
+        op,
+        funct3,
+        funct7b5,
+        ImmSrc,
+        instruction,
+        registerfile,
+        memory,
+        fsm_states,
+        pc,
+        reset,
+    )
 
 
 @cocotb.test()
 async def test_j_instruction(dut, period_ns=1):
-    op, funct3, funct7b5, ImmSrc, instruction, registerfile, memory, fsm_states, pc, reset = await setup_test(dut, period_ns)
+    (
+        op,
+        funct3,
+        funct7b5,
+        ImmSrc,
+        instruction,
+        registerfile,
+        memory,
+        fsm_states,
+        pc,
+        reset,
+    ) = await setup_test(dut, period_ns)
 
     alu_result = XDEF
 
     for fsm_state in fsm_states:
         await assign_dut_state(
-    dut, fsm_state, reset, op, funct3, funct7b5, ImmSrc, instruction
-    )
+            dut, fsm_state, reset, op, funct3, funct7b5, ImmSrc, instruction
+        )
 
     if fsm_state == States.S_FETCH or fsm_state == States.S_DECODE:
-        _, alu_result = test_fetch_decode(
-    dut, fsm_state, instruction, ImmSrc, pc = pc
-    )
+        _, alu_result = test_fetch_decode(dut, fsm_state, instruction, ImmSrc, pc=pc)
 
     elif fsm_state == States.S_JAL:
         datapath_tests.test_jal(dut, pc, alu_result)
@@ -285,23 +308,34 @@ async def test_j_instruction(dut, period_ns=1):
     await RisingEdge(dut.clk)
     await Timer(1, units="ns")
 
+
 @cocotb.test()
 async def test_r_instruction(dut, period_ns=1):
-    op, funct3, funct7b5, ImmSrc, instruction, registerfile, memory, fsm_states, pc, reset = await setup_test(dut, period_ns)
+    (
+        op,
+        funct3,
+        funct7b5,
+        ImmSrc,
+        instruction,
+        registerfile,
+        memory,
+        fsm_states,
+        pc,
+        reset,
+    ) = await setup_test(dut, period_ns)
 
     rd1 = 0
     rd2 = 0
 
-
     for fsm_state in fsm_states:
         await assign_dut_state(
-    dut, fsm_state, reset, op, funct3, funct7b5, ImmSrc, instruction
-    )
+            dut, fsm_state, reset, op, funct3, funct7b5, ImmSrc, instruction
+        )
 
     if fsm_state == States.S_FETCH or fsm_state == States.S_DECODE:
         immext, _ = test_fetch_decode(
-    dut, fsm_state, instruction, ImmSrc, rd1 = rd1, pc = pc
-    )
+            dut, fsm_state, instruction, ImmSrc, rd1=rd1, pc=pc
+        )
 
     elif fsm_state == States.S_EXECUTER:
         datapath_tests.test_ExecuteR(dut, rd1=rd1, rd2=rd2)
@@ -316,8 +350,18 @@ async def test_r_instruction(dut, period_ns=1):
 
 @cocotb.test()
 async def test_lw_instruction(dut, period_ns=1):
-    op, funct3, funct7b5, ImmSrc, instruction, registerfile, memory, fsm_states, pc, reset = await setup_test(dut,
-                                                                                                              period_ns)
+    (
+        op,
+        funct3,
+        funct7b5,
+        ImmSrc,
+        instruction,
+        registerfile,
+        memory,
+        fsm_states,
+        pc,
+        reset,
+    ) = await setup_test(dut, period_ns)
 
     rd1 = registerfile[get_rs1(instruction)]
 
@@ -365,9 +409,21 @@ async def test_lw_instruction(dut, period_ns=1):
         await RisingEdge(dut.clk)
         await Timer(1, units="ns")
 
+
 @cocotb.test()
 async def test_sw_instruction(dut, period_ns=1):
-    op, funct3, funct7b5, ImmSrc, instruction, registerfile, memory, fsm_states, pc, reset = await setup_test(dut, period_ns)
+    (
+        op,
+        funct3,
+        funct7b5,
+        ImmSrc,
+        instruction,
+        registerfile,
+        memory,
+        fsm_states,
+        pc,
+        reset,
+    ) = await setup_test(dut, period_ns)
 
     rd1 = registerfile[get_rs1(instruction)]
     rd2 = registerfile[get_rs2(instruction)]
@@ -397,11 +453,20 @@ async def test_sw_instruction(dut, period_ns=1):
         await Timer(1, units="ns")
 
 
-
-
 @cocotb.test()
 async def test_beq_instruction(dut, period_ns=1):
-    op, funct3, funct7b5, ImmSrc, instruction, registerfile, memory, fsm_states, pc, reset = await setup_test(dut, period_ns)
+    (
+        op,
+        funct3,
+        funct7b5,
+        ImmSrc,
+        instruction,
+        registerfile,
+        memory,
+        fsm_states,
+        pc,
+        reset,
+    ) = await setup_test(dut, period_ns)
 
     rd1 = registerfile[get_rs1(instruction)]
     rd2 = registerfile[get_rs2(instruction)]
@@ -439,15 +504,24 @@ async def test_beq_instruction(dut, period_ns=1):
     return zero
 
 
-
 @cocotb.test()
 async def test_i_instruction(dut, period_ns=1):
-    op, funct3, funct7b5, ImmSrc, instruction, registerfile, memory, fsm_states, pc, reset = await setup_test(dut, period_ns)
+    (
+        op,
+        funct3,
+        funct7b5,
+        ImmSrc,
+        instruction,
+        registerfile,
+        memory,
+        fsm_states,
+        pc,
+        reset,
+    ) = await setup_test(dut, period_ns)
     rd1 = registerfile[get_rs1(instruction)]
 
     immext = XDEF
     rd1_immext = XDEF
-
 
     for fsm_state in fsm_states:
 

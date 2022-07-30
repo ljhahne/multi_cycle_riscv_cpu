@@ -1,13 +1,13 @@
 import os
 
+import cocotb
 from cocotb.triggers import Timer
 
-import cocotb
-from tests.multi_cycle_cpu.models import pc_write
 from tests.common import check_value
+from tests.multi_cycle_cpu.models import pc_write
+
 
 def read_vars():
-
 
     funct3 = int(os.getenv("funct3"))
     N = int(os.getenv("N"))
@@ -18,7 +18,11 @@ def read_vars():
     Branch = int(os.getenv("Branch"))
     PCUpdate = int(os.getenv("PCUpdate"))
 
-    print("funct3 {}\nN {}\nZ {}\nV {}\nC {}\nBranch {}\nPCUpdate {}".format(funct3, N, Z, V, C, Branch, PCUpdate))
+    print(
+        "funct3 {}\nN {}\nZ {}\nV {}\nC {}\nBranch {}\nPCUpdate {}".format(
+            funct3, N, Z, V, C, Branch, PCUpdate
+        )
+    )
 
     return funct3, N, Z, V, C, Branch, PCUpdate
 

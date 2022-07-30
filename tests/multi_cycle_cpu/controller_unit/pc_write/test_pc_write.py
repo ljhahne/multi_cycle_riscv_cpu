@@ -2,8 +2,9 @@ import os
 
 import pytest
 
-from tests.setup_tests import Config, init_waveforms, run_simulation
 from tests import instructions
+from tests.setup_tests import Config, init_waveforms, run_simulation
+
 toplevel = "pc_write"
 
 config = Config(
@@ -26,7 +27,15 @@ def set_signals(Op, N, Z, C, V, Branch, PCUpdate):
         # only for illegal state
         funct3 = Op
 
-    return {"funct3": str(funct3), "N": str(N), "Z": str(Z), "V": str(V), "C": str(C), "Branch": str(Branch), "PCUpdate": str(PCUpdate)}
+    return {
+        "funct3": str(funct3),
+        "N": str(N),
+        "Z": str(Z),
+        "V": str(V),
+        "C": str(C),
+        "Branch": str(Branch),
+        "PCUpdate": str(PCUpdate),
+    }
 
 
 waveform_file = "instruction_decoder_op_{}_Z_{}_C_{}_V_{}_Branch_{}_PCUpdate_{}.vcd"
@@ -56,5 +65,13 @@ def test_branch_pcupdate(Branch, PCUpdate):
         config,
         "test_{}".format(toplevel),
         waveform_file,
-        set_signals(Op=instructions.sb_instruction.BEQop, N=0, Z=1, C=0, V=0, Branch=Branch, PCUpdate=PCUpdate),
+        set_signals(
+            Op=instructions.sb_instruction.BEQop,
+            N=0,
+            Z=1,
+            C=0,
+            V=0,
+            Branch=Branch,
+            PCUpdate=PCUpdate,
+        ),
     )

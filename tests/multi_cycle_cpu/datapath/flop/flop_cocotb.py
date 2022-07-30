@@ -1,9 +1,9 @@
 import os
 
+import cocotb
 from cocotb.clock import Clock
 from cocotb.triggers import RisingEdge, Timer
 
-import cocotb
 from tests.common import check_value
 
 
