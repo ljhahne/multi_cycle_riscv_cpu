@@ -151,11 +151,11 @@ def test_jal(datapath, pc, alu_result):
 
 
 def test_beq(datapath, branch_target_address, rd1, rd2):
-    zero = 1 if rd1 - rd2 == 0 else 0
+    Z = 1 if rd1 - rd2 == 0 else 0
     check_value(datapath.pcReg.d, branch_target_address)
-    check_value(datapath.alu.zero, zero)
+    check_value(datapath.alu.Z, Z)
 
-    return zero
+    return Z
 
 
 def test_memread(datapath, rd):

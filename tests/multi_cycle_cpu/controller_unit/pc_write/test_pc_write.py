@@ -3,8 +3,7 @@ import os
 import pytest
 
 from tests.setup_tests import Config, init_waveforms, run_simulation
-import tests.instructions.sb_instruction as instr
-
+from tests import instructions
 toplevel = "pc_write"
 
 config = Config(
@@ -34,7 +33,7 @@ waveform_file = "instruction_decoder_op_{}_Z_{}_C_{}_V_{}_Branch_{}_PCUpdate_{}.
 
 
 # funct3 = 0b11 does not exist for b type instructions
-@pytest.mark.parametrize("op", [instr.BEQop, instr.BNEop, instr.BLTop, instr.BGEop, instr.BLTUop, instr.BGEUop, 0b11])
+@pytest.mark.parametrize("op", [*instructions.b_instructions, 0b11])
 @pytest.mark.parametrize("N", [0, 1])
 @pytest.mark.parametrize("Z", [0, 1])
 @pytest.mark.parametrize("C", [0, 1])
@@ -57,5 +56,5 @@ def test_branch_pcupdate(Branch, PCUpdate):
         config,
         "test_{}".format(toplevel),
         waveform_file,
-        set_signals(Op=instr.BEQop, N=0, Z=1, C=0, V=0, Branch=Branch, PCUpdate=PCUpdate),
+        set_signals(Op=instructions.sb_instruction.BEQop, N=0, Z=1, C=0, V=0, Branch=Branch, PCUpdate=PCUpdate),
     )

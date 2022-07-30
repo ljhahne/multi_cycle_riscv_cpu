@@ -1,7 +1,8 @@
 import os
-
+print(os.listdir("/opt/project/tests/multi_cycle_cpu/controller_unit/top/"))
 import pytest
 
+from tests import instructions
 from tests.instructions.i_instruction import ADDIop, IInstruction, LWop
 from tests.instructions.r_instruction import (
     ADDop,
@@ -12,7 +13,7 @@ from tests.instructions.r_instruction import (
     SLTop,
     SUBop,
 )
-from tests.instructions.sb_instruction import BEQop, SWop
+from tests.instructions.sb_instruction import BInstruction, SWop
 from tests.instructions.uj_instruction import JALop
 from tests.multi_cycle_cpu.defs import ImmSrc
 from tests.setup_tests import Config, init_waveforms, run_simulation
@@ -39,7 +40,7 @@ config = Config(
 init_waveforms(config)
 
 
-def set_signals(reset, Instruction, Zero):
+def set_signals(reset, Instruction, N=0, Z=0, C=0, V=0):
     if issubclass(Instruction, IInstruction):
         immsrc = ImmSrc.i_type
 
@@ -49,7 +50,7 @@ def set_signals(reset, Instruction, Zero):
     elif issubclass(Instruction, SWop):
         immsrc = ImmSrc.sw
 
-    elif issubclass(Instruction, BEQop):
+    elif issubclass(Instruction, BInstruction):
         immsrc = ImmSrc.beq
 
     elif issubclass(Instruction, JALop):
@@ -68,57 +69,63 @@ def set_signals(reset, Instruction, Zero):
         "op": str(instruction.get_op()),
         "funct3": str(instruction.get_funct3()),
         "funct7b5": str(instruction.get_funct7b5()),
-        "Zero": str(Zero),
+        "Z": str(Z),
+        "N": str(N),
+        "C": str(C),
+        "V": str(V),
         "ImmSrc": str(immsrc),
     }
 
 
-waveform_file = "controller_reset_{}_op_{}_funct3_{}_funct7b5_{}_Zero_{}.vcd"
+waveform_file = "controller_reset_{}_op_{}_funct3_{}_funct7b5_{}_Z_{}.vcd"
 
 
-@pytest.mark.parametrize("Zero", [0, 1])
+@pytest.mark.parametrize("Z", [0])
 @pytest.mark.parametrize("reset", [0])
 @pytest.mark.parametrize("instruction", [ORop, ANDop, SLTop, ADDop, SUBop, SLLop])
-def test_r_instructions(reset, instruction, Zero):
+def test_r_instructions(reset, instruction, Z):
     run_simulation(
         config,
         "test_{}".format(toplevel),
         waveform_file,
-        set_signals(reset, instruction, Zero),
+        set_signals(reset, instruction, Z),
     )
 
 
-@pytest.mark.parametrize("Zero", [0, 1])
+@pytest.mark.parametrize("Z", [0])
 @pytest.mark.parametrize("reset", [0])
 @pytest.mark.parametrize("instruction", [ADDIop, LWop])
-def test_i_instructions(reset, instruction, Zero):
+def test_i_instructions(reset, instruction, Z):
     run_simulation(
         config,
         "test_{}".format(toplevel),
         waveform_file,
-        set_signals(reset, instruction, Zero),
+        set_signals(reset, instruction, Z),
     )
 
 
-@pytest.mark.parametrize("Zero", [0, 1])
+@pytest.mark.parametrize("Z", [0])
 @pytest.mark.parametrize("reset", [0])
 @pytest.mark.parametrize("instruction", [JALop])
-def test_ju_instructions(reset, instruction, Zero):
+def test_ju_instructions(reset, instruction, Z):
     run_simulation(
         config,
         "test_{}".format(toplevel),
         waveform_file,
-        set_signals(reset, instruction, Zero),
+        set_signals(reset, instruction, Z),
     )
 
 
-@pytest.mark.parametrize("Zero", [0, 1])
+@pytest.mark.parametrize("N", [0, 1])
+@pytest.mark.parametrize("Z", [0, 1])
+@pytest.mark.parametrize("C", [0, 1])
+@pytest.mark.parametrize("V", [0, 1])
 @pytest.mark.parametrize("reset", [0])
-@pytest.mark.parametrize("instruction", [SWop, BEQop])
-def test_sb_instructions(reset, instruction, Zero):
+@pytest.mark.parametrize("instruction", [SWop, *instructions.b_instructions])
+def test_sb_instructions(reset, instruction, N, Z, C, V):
     run_simulation(
         config,
         "test_{}".format(toplevel),
         waveform_file,
-        set_signals(reset, instruction, Zero),
+        set_signals(reset, instruction, N, Z, C, V),
     )

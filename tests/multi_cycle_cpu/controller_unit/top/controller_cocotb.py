@@ -19,24 +19,31 @@ def read_vars():
 
     funct7b5 = int(os.getenv("funct7b5"))
 
-    Zero = int(os.getenv("Zero"))
+    N = int(os.getenv("N"))
+    Z = int(os.getenv("Z"))
+    C = int(os.getenv("C"))
+    V = int(os.getenv("V"))
+
     ImmSrc = int(os.getenv("ImmSrc"))
 
     print(
-        "op {}\nreset {}\nfunct3 {}\nfunct7b5 {}\nZero {}\nImmSrc {}".format(
-            op, reset, funct3, funct7b5, Zero, ImmSrc
+        "op {}\nreset {}\nfunct3 {}\nfunct7b5 {}\nZ {}\nC {}\nV {}\nImmSrc {}".format(
+            op, reset, funct3, funct7b5, N, Z, C, V, ImmSrc
         )
     )
 
-    return op, reset, funct3, funct7b5, Zero, ImmSrc
+    return op, reset, funct3, funct7b5, N, Z, C, V, ImmSrc
 
 
-async def assign_vars(dut, op, reset, funct3, funct7b5, Zero):
+async def assign_vars(dut, op, reset, funct3, funct7b5, N, Z, C, V):
     dut.reset.value = reset
     dut.op.value = op
     dut.funct3.value = funct3
     dut.funct7b5.value = funct7b5
-    dut.Zero.value = Zero
+    dut.N.value = N
+    dut.Z.value = Z
+    dut.C.value = C
+    dut.V.value = V
 
     await Timer(1, units="ns")
 
@@ -44,8 +51,8 @@ async def assign_vars(dut, op, reset, funct3, funct7b5, Zero):
 @cocotb.test()
 async def test_controller(dut, period_ns=1):
 
-    op, reset, funct3, funct7b5, Zero, ImmSrc = read_vars()
-    await assign_vars(dut, op, reset, funct3, funct7b5, Zero)
+    op, reset, funct3, funct7b5, N, Z, C, V, ImmSrc = read_vars()
+    await assign_vars(dut, op, reset, funct3, funct7b5, N, Z, C, V)
 
     cocotb.start_soon(Clock(dut.clk, period_ns, units="ns").start())
 
@@ -68,7 +75,7 @@ async def test_controller(dut, period_ns=1):
         ) = output_logic(fsm_state)
 
         alu_control = model_alu_control(opb5(op), funct3, funct7b5, aluOP)
-        pc_write = model_pc_write(Zero, Branch, PCUpdate)
+        pc_write = model_pc_write(funct3, N, Z, C, V, Branch, PCUpdate)
 
         check_value(dut.ImmSrc, ImmSrc)
         check_value(dut.ALUSrcA, ALUSrcA)
