@@ -25,12 +25,6 @@ async def assign_dut_state(
     funct7b5,
     ImmSrc,
     ReadData,
-    rd1=None,
-    rd2=None,
-    N=None,
-    V=None,
-    Z=None,
-    C=None,
     read_data_override=None,
 ):
     (
@@ -48,15 +42,9 @@ async def assign_dut_state(
 
     ALUControl = model_alu_control(opb5(op), funct3, funct7b5, aluOP)
 
-    if rd1 is not None and rd2 is not None:
-        PCWrite = model_pc_write(
-            funct3=funct3, N=0, Z=1, C=0, V=0, Branch=Branch, PCUpdate=PCUpdate
-        )
-
-    else:
-        PCWrite = model_pc_write(
-            funct3=funct3, N=0, Z=0, C=0, V=0, Branch=Branch, PCUpdate=PCUpdate
-        )
+    PCWrite = model_pc_write(
+        funct3=funct3, N=0, Z=0, C=0, V=0, Branch=Branch, PCUpdate=PCUpdate
+    )
 
     if read_data_override is not None:
         ReadData = read_data_override
@@ -473,8 +461,6 @@ async def test_beq_instruction(dut, period_ns=1):
 
     alu_result = XDEF
 
-    zero = XDEF
-
     for fsm_state in fsm_states:
 
         await assign_dut_state(
@@ -486,8 +472,6 @@ async def test_beq_instruction(dut, period_ns=1):
             funct7b5,
             ImmSrc,
             instruction,
-            rd1=rd1,
-            rd2=rd2,
         )
 
         if fsm_state == States.S_FETCH or fsm_state == States.S_DECODE:
@@ -496,12 +480,10 @@ async def test_beq_instruction(dut, period_ns=1):
             )
 
         elif fsm_state == States.S_BEQ:
-            zero = datapath_tests.test_beq(dut, alu_result, rd1, rd2)
+            datapath_tests.test_beq(dut, alu_result, rd1, rd2)
 
         await RisingEdge(dut.clk)
         await Timer(1, units="ns")
-
-    return zero
 
 
 @cocotb.test()

@@ -97,14 +97,16 @@ def test_j_instructions(Instruction):
 
 
 @pytest.mark.parametrize("Instruction", [BEQop])
-def test_beq_instructions(Instruction):
+@pytest.mark.parametrize("rd1", [1, -1])
+@pytest.mark.parametrize("rd2", [1, -1])
+def test_beq_instructions(Instruction, rd1, rd2):
     instruction = Instruction(rs1=2, rs2=1, imm=12)
 
     run_simulation(
         config,
         "test_beq_instruction",
         waveform_file,
-        set_signals(instruction, ImmSrc.beq, rd1=1, rd2=2),
+        set_signals(instruction, ImmSrc.beq, rd1=rd1, rd2=rd2),
     )
 
 
