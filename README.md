@@ -5,8 +5,15 @@
 - Work in progress: Instruction set is not yet complete. This will be fixed soon.
 - Verification of the design is achieved with [cocotb](https://github.com/cocotb/cocotb/) and [icarus verilog](http://iverilog.icarus.com/)  
 
-To test the design build the docker container in `docker/cocotb` and run
+To test the design, build the docker container
+
+```
+cd docker/cocotb
+docker build -t cocotb .
+```
+
+In the root directory of the project, run
 
 ```bash
-SIM=icarus python3 -m pytest -o log_cli=True tests/
+docker run --rm -it -v $(pwd):/opt/project cocotb bash -c "cd /opt/project ; SIM=icarus python3 -m pytest -o log_cli=True -n auto tests/"
 ```
