@@ -472,13 +472,23 @@ def bitwise_not(value, N):
 def alu(a: int, b: int, alucontrol: ALUControl, N=32):
     zero = 0
     result = 0
+    C_out = 0
+
+    a = Bits(int=a, length=N).uint
 
     if alucontrol == ALUControl.ADD:
-        result = a + b
+        result = Bits(uint=int(bin(Bits(int=b, length=N).uint + a), 2), length=N + 1)
+
+        C_out = int(result[0])
+        result = result[1:].uint
 
     elif alucontrol == ALUControl.SUB:
         # subtraction is addition with a and not b and a carry in of 1
-        result = int(bin(a + bitwise_not(b, N) + 1), 2)
+        result = Bits(
+            uint=int(bin(1 + (~Bits(int=b, length=N)).uint + a), 2), length=N + 1
+        )
+        C_out = int(result[0])
+        result = result[1:].uint
 
     elif alucontrol == ALUControl.AND:
         result = a & b
@@ -493,36 +503,32 @@ def alu(a: int, b: int, alucontrol: ALUControl, N=32):
         result = a << Bits(uint=b, length=N)[-4:].uint
 
     length = Bits(bin=bin(result)).length
-    result = Bits(bin=bin(result))[length - N :].uint
+
+    if length > N:
+        result = Bits(bin=bin(result))[length - N :].uint
 
     if result == 0:
         zero = 1
 
     # cut off overflows : bits in result which are at the N + ith position are ignored
-    return result, zero
+    return result, zero, C_out
 
 
-def alu_flags(a, b, alucontrol):
-    result, Z = alu(a, b, alucontrol)
+def alu_flags(a, b, alucontrol, N=32):
+
+    result, Z, C_out = alu(a, b, alucontrol)
 
     alucontrol_b = Bits(uint=alucontrol, length=3)
 
-    if alucontrol_b[-1]:
-        b = bitwise_not(b, 32) + 1
+    sum_31 = int(Bits(uint=result, length=N)[0])
 
-    sum = a + b
-
-    sum_b = Bits(uint=sum, length=33)
-    C_out = sum_b[0]
-    sum_31 = sum_b[1]
-
-    a_31 = Bits(uint=a, length=32)[0]
-    b_31 = Bits(uint=b, length=32)[0]
+    a_31 = int(Bits(int=a, length=N)[0])
+    b_31 = int(Bits(int=b, length=N)[0])
 
     alucontrol_0 = alucontrol_b[-1]
     alucontrol_1_not = (~alucontrol_b)[-2]
 
-    C = C_out & alucontrol_1_not
+    C = int(C_out & alucontrol_1_not)
     V = int(
         bitwise_not(alucontrol_0 ^ a_31 ^ b_31, 1)
         & (a_31 ^ sum_31)
@@ -693,3 +699,39 @@ def instruction_decoder(op):
 
 def signExtend(value, length=32):
     return Bits(uint=value, length=length).int
+
+
+# def alusignals(rd1, rd2, N=32):
+#
+#     sum = Bits(int=rd1 - rd2, length=N+1)
+#     a_31 = int(Bits(int=rd1, length=N)[0])
+#     b_31 = int(Bits(int=rd2, length=N)[0])
+#
+#     Z = rd1 == rd2
+#     N = sum.int < 0
+#     V = bitwise_not((b_31 ^ a_31 ^ 1), 1) & (sum[1] ^ a_31)
+#     C = int(sum[0])
+#
+#     return C, N, V, Z
+
+
+def branch_pc_write(Instruction, rd1, rd2, N=32):
+    if isinstance(Instruction, BEQop):
+        return rd1 == rd2
+
+    elif isinstance(Instruction, BNEop):
+        return rd1 != rd2
+
+    elif isinstance(Instruction, BLTop):
+        return rd1 < rd2
+
+    elif isinstance(Instruction, BGEop):
+        return rd1 >= rd2
+
+    elif isinstance(Instruction, BLTUop):
+        return Bits(int=rd1, length=N).uint < Bits(int=rd2, length=N).uint
+
+    elif isinstance(Instruction, BGEUop):
+        return Bits(int=rd1, length=N).uint >= Bits(int=rd2, length=N).uint
+
+    return 0
