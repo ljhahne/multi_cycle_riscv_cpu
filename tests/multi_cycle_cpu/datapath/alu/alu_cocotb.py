@@ -15,7 +15,7 @@ def read_vars():
 
     print(
         "a {}\nb {}\nalucontrol {}".format(
-            Bits(uint=a, length=32).bin, Bits(uint=b, length=32).bin, alucontrol
+            Bits(int=a, length=32).bin, Bits(int=b, length=32).bin, alucontrol
         )
     )
 
@@ -35,7 +35,7 @@ async def test_alu(dut):
     a, b, alucontrol = read_vars()
     await assign_vars(dut, a, b, alucontrol)
 
-    result, Z = alu(a, b, alucontrol)
+    result, Z, _ = alu(a, b, alucontrol)
     check_value(dut.result, result)
     check_value(dut.Z, Z)
 
