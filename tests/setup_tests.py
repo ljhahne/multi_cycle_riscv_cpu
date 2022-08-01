@@ -124,6 +124,9 @@ def run_simulation(config, testcase, waveformfile_template, signals):
     waveform = init_waveformfile(config, waveformfile_template, signals=signals)
 
     vars = default_run_vars(config, testcase)
-    run(**vars, extra_env=signals, plus_args=[waveform])
 
-    shutil.rmtree(vars["sim_build"])
+    try:
+        run(**vars, extra_env=signals, plus_args=[waveform])
+
+    finally:
+        shutil.rmtree(vars["sim_build"])
