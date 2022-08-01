@@ -1,8 +1,8 @@
 import pytest
 
+from tests import instructions
 from tests.instructions.i_instruction import ADDIop, LWop
 from tests.instructions.r_instruction import ORop
-from tests.instructions.sb_instruction import BEQop, SWop
 from tests.instructions.uj_instruction import JALop
 from tests.multi_cycle_cpu.defs import ImmSrc
 from tests.setup_tests import Config, init_waveforms, run_simulation
@@ -60,7 +60,7 @@ def test_i_instructions(Instruction):
     )
 
 
-@pytest.mark.parametrize("Instruction", [SWop])
+@pytest.mark.parametrize("Instruction", [*instructions.s_instructions])
 def test_sw_instructions(Instruction):
     instruction = Instruction(rs2=2, imm=10, rs1=4)
 
@@ -96,15 +96,15 @@ def test_j_instructions(Instruction):
     )
 
 
-@pytest.mark.parametrize("Instruction", [BEQop])
+@pytest.mark.parametrize("Instruction", [*instructions.b_instructions])
 @pytest.mark.parametrize("rd1", [1, -1])
 @pytest.mark.parametrize("rd2", [1, -1])
-def test_beq_instructions(Instruction, rd1, rd2):
+def test_b_instructions(Instruction, rd1, rd2):
     instruction = Instruction(rs1=2, rs2=1, imm=12)
 
     run_simulation(
         config,
-        "test_beq_instruction",
+        "test_b_instruction",
         waveform_file,
         set_signals(instruction, ImmSrc.beq, rd1=rd1, rd2=rd2),
     )
