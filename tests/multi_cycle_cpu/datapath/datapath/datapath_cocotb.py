@@ -442,7 +442,7 @@ async def test_sw_instruction(dut, period_ns=1):
 
 
 @cocotb.test()
-async def test_beq_instruction(dut, period_ns=1):
+async def test_b_instruction(dut, period_ns=1):
     (
         op,
         funct3,
@@ -480,7 +480,7 @@ async def test_beq_instruction(dut, period_ns=1):
             )
 
         elif fsm_state == States.S_BEQ:
-            datapath_tests.test_beq(dut, alu_result, rd1, rd2)
+            datapath_tests.test_b_instructions(dut, alu_result, rd1, rd2)
 
         await RisingEdge(dut.clk)
         await Timer(1, units="ns")
