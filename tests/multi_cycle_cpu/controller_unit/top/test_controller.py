@@ -14,7 +14,7 @@ from tests.instructions.r_instruction import (
     SLTop,
     SUBop,
 )
-from tests.instructions.sb_instruction import BInstruction, SWop
+from tests.instructions.sb_instruction import BInstruction, SInstruction
 from tests.instructions.uj_instruction import JALop
 from tests.multi_cycle_cpu.defs import ImmSrc
 from tests.setup_tests import Config, init_waveforms, run_simulation
@@ -48,7 +48,7 @@ def set_signals(reset, Instruction, N=0, Z=0, C=0, V=0):
     elif issubclass(Instruction, LWop):
         immsrc = ImmSrc.lw
 
-    elif issubclass(Instruction, SWop):
+    elif issubclass(Instruction, SInstruction):
         immsrc = ImmSrc.sw
 
     elif issubclass(Instruction, BInstruction):
@@ -122,7 +122,9 @@ def test_ju_instructions(reset, instruction, Z):
 @pytest.mark.parametrize("C", [0, 1])
 @pytest.mark.parametrize("V", [0, 1])
 @pytest.mark.parametrize("reset", [0])
-@pytest.mark.parametrize("instruction", [SWop, *instructions.b_instructions])
+@pytest.mark.parametrize(
+    "instruction", [*instructions.s_instructions, *instructions.b_instructions]
+)
 def test_sb_instructions(reset, instruction, N, Z, C, V):
     run_simulation(
         config,
