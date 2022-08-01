@@ -151,7 +151,7 @@ def test_jal(datapath, pc, alu_result):
     check_value(datapath.aluOutReg.q, alu_result)
 
 
-def test_beq(datapath, branch_target_address, rd1, rd2):
+def test_b_instructions(datapath, branch_target_address, rd1, rd2):
     N, Z, C, V = alu_flags(rd1, rd2, ALUControl.SUB)
 
     check_value(datapath.pcReg.d, branch_target_address)
