@@ -254,7 +254,7 @@ def test_beq_state(dut, branch_target_address, rd1, rd2):
     check_value(control_unit.Branch, 1)
 
     # datapath
-    zero = datapath_tests.test_beq(datapath, branch_target_address, rd1, rd2)
+    zero = datapath_tests.test_b_instructions(datapath, branch_target_address, rd1, rd2)
 
     return zero
 
