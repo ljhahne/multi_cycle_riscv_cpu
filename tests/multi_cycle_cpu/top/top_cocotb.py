@@ -1,11 +1,11 @@
 import operator
 import os
 
+import cocotb
 from bitstring import Bits
 from cocotb.clock import Clock
 from cocotb.triggers import RisingEdge, Timer
 
-import cocotb
 from tests.common import check_value
 from tests.multi_cycle_cpu.common import datapath_tests, memory_tests, register_tests
 from tests.multi_cycle_cpu.common.dut import reset_dut
@@ -254,7 +254,7 @@ def test_beq_state(dut, branch_target_address, rd1, rd2):
     check_value(control_unit.Branch, 1)
 
     # datapath
-    zero = datapath_tests.test_beq(datapath, branch_target_address, rd1, rd2)
+    zero = datapath_tests.test_b_instructions(datapath, branch_target_address, rd1, rd2)
 
     return zero
 

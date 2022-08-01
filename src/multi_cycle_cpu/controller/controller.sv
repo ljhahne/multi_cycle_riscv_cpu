@@ -18,7 +18,10 @@ module controller(
                     input  opcodetype  op,
                     input  logic [2:0] funct3,
                     input  logic       funct7b5,
-                    input  logic       Zero,
+                    input logic N,
+                    input logic Z,
+                    input logic C,
+                    input logic V,
                     output logic [1:0] ImmSrc,
                     output logic [1:0] ALUSrcA,
                     output logic [1:0] ALUSrcB,
@@ -65,7 +68,15 @@ module controller(
     //Instruction Decoder
     instruction_decoder instructonDecoder(op, ImmSrc);
 
-    pc_write pcWrite(Zero, Branch, PCUpdate, PCWrite);
+    pc_write pcWrite( .N(N), 
+                      .Z(Z), 
+                      .C(C), 
+                      .V(V), 
+                      .funct3(funct3), 
+                      .Branch(Branch), 
+                      .PCUpdate(PCUpdate),
+                      .PCWrite(PCWrite)
+                    );
 
 
 endmodule

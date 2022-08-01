@@ -1,9 +1,9 @@
 import os
 
+import cocotb
 from bitstring import Bits
 from cocotb.triggers import Timer
 
-import cocotb
 from tests.common import check_value
 from tests.multi_cycle_cpu.models import extend as model
 

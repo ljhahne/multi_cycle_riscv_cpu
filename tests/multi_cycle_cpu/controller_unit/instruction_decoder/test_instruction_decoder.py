@@ -40,7 +40,7 @@ waveform_file = "instruction_decoder_op_{}ImmSrc_{}.vcd"
         (Op.default, ImmSrc.default),
     ],
 )
-def test_lw(op, immSrc):
+def test_instruction_decoder(op, immSrc):
     run_simulation(
         config, "test_instruction_decoder", waveform_file, set_signals(op, immSrc)
     )

@@ -8,6 +8,7 @@ config = Config(
         "src/multi_cycle_cpu/top/riscvmulti.sv",
         "src/multi_cycle_cpu/datapath/datapath.sv",
         "src/multi_cycle_cpu/datapath/alu.sv",
+        "src/multi_cycle_cpu/datapath/aluflags.sv",
         "src/multi_cycle_cpu/datapath/extend.sv",
         "src/multi_cycle_cpu/datapath/flop.sv",
         "src/multi_cycle_cpu/datapath/flopdual.sv",

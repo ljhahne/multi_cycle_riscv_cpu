@@ -1,10 +1,10 @@
 import os
 
+import cocotb
 from bitstring import Bits
 from cocotb.clock import Clock
 from cocotb.triggers import RisingEdge, Timer
 
-import cocotb
 from tests.common import check_value
 from tests.multi_cycle_cpu.models import flop as model
 

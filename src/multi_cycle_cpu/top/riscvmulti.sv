@@ -20,7 +20,7 @@ module riscvmulti #(parameter WIDTH = 32) (
     logic [2:0] ALUControl;
     logic [1:0] ALUSrcA, ALUSrcB, ImmSrc, ResultSrc;
     logic PCWrite, RegWrite;
-    logic Zero;
+    logic N, Z, C, V;
     
 
     controller riscvcontroller(
@@ -29,7 +29,6 @@ module riscvmulti #(parameter WIDTH = 32) (
                    .op(opcodetype'(Instr[6:0])),
                    .funct3(Instr[14:12]),
                    .funct7b5(Instr[30]),
-                   .Zero(Zero),
                    .ImmSrc(ImmSrc),
                    .ALUSrcA(ALUSrcA),
                    .ALUSrcB(ALUSrcB),
@@ -39,7 +38,11 @@ module riscvmulti #(parameter WIDTH = 32) (
                    .IRWrite(IRWrite),
                    .PCWrite(PCWrite),
                    .RegWrite(RegWrite),
-                   .MemWrite(MemWrite)
+                   .MemWrite(MemWrite),
+                   .N(N), 
+                   .Z(Z), 
+                   .C(C), 
+                   .V(V)
                );
 
 
@@ -58,7 +61,10 @@ module riscvmulti #(parameter WIDTH = 32) (
                  .ReadData(ReadData),
                  .DataAdr(DataAdr),
                  .WriteData(WriteData),
-                 .Zero(Zero),
+                 .N(N), 
+                 .Z(Z), 
+                 .C(C), 
+                 .V(V),
                  .Instr(Instr)
              );
 

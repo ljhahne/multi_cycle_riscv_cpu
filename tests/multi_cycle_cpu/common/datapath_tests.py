@@ -6,6 +6,7 @@ from tests.common import check_value
 from tests.multi_cycle_cpu.defs import XDEF, ALUControl
 from tests.multi_cycle_cpu.models import alu_control as alu_decoder
 from tests.multi_cycle_cpu.models import (
+    alu_flags,
     extend,
     get_extend_instruction,
     get_funct3,
@@ -150,12 +151,16 @@ def test_jal(datapath, pc, alu_result):
     check_value(datapath.aluOutReg.q, alu_result)
 
 
-def test_beq(datapath, branch_target_address, rd1, rd2):
-    zero = 1 if rd1 - rd2 == 0 else 0
-    check_value(datapath.pcReg.d, branch_target_address)
-    check_value(datapath.alu.zero, zero)
+def test_b_instructions(datapath, branch_target_address, rd1, rd2):
+    N, Z, C, V = alu_flags(rd1, rd2, ALUControl.SUB)
 
-    return zero
+    check_value(datapath.pcReg.d, branch_target_address)
+    check_value(datapath.alu.N, N)
+    check_value(datapath.alu.Z, Z)
+    check_value(datapath.alu.C, C)
+    check_value(datapath.alu.V, V)
+
+    return Z
 
 
 def test_memread(datapath, rd):

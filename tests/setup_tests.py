@@ -6,8 +6,6 @@ from typing import List
 
 from cocotb_test.simulator import run
 
-# import pdb ; pdb.set_trace()
-
 waveform_file_template = """module waveform_dump();
 initial begin
     string waveformfile;
@@ -17,6 +15,8 @@ initial begin
 end
 endmodule
 """
+import random
+import string
 
 TESTDIR_PREFIX = "tests"
 
@@ -83,14 +83,22 @@ def init_waveforms(config: Config) -> None:
     config.HDLFILES.append(waveform_path)
 
 
-def default_run_vars(config: Config, testcase):
+def default_run_vars(config: Config, testcase, N=10):
     return {
         "includes": config.INCLUDES,
         "verilog_sources": config.HDLFILES,
         "toplevel": config.TOPLEVEL,
         "module": config.COCOTBMODULE,
         "testcase": testcase,
-        "sim_build": config.SIM_BUILD,
+        "sim_build": "{}_{}".format(
+            config.SIM_BUILD,
+            "".join(
+                [
+                    random.choice(string.ascii_uppercase + string.digits)
+                    for _ in range(N)
+                ]
+            ),
+        ),
         "work_dir": config.WORK_DIR,
         "force_compile": True,
         "compile_args": ["-s", "waveform_dump"],
@@ -115,4 +123,10 @@ def init_waveformfile(config, filename_template, *args, **kwargs):
 def run_simulation(config, testcase, waveformfile_template, signals):
     waveform = init_waveformfile(config, waveformfile_template, signals=signals)
 
-    run(**default_run_vars(config, testcase), extra_env=signals, plus_args=[waveform])
+    vars = default_run_vars(config, testcase)
+
+    try:
+        run(**vars, extra_env=signals, plus_args=[waveform])
+
+    finally:
+        shutil.rmtree(vars["sim_build"])
