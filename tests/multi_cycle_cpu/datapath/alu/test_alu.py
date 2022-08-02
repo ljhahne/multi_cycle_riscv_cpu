@@ -83,6 +83,11 @@ def test_sll(a, b):
     run_simulation(config, "test_alu", waveform_file, set_signals(a, b, ALUControl.SLL))
 
 
+@pytest.mark.parametrize("a,b", [(0, INT_MAX), (INT_MAX, 0)])
+def test_lui(a, b):
+    run_simulation(config, "test_alu", waveform_file, set_signals(a, b, ALUControl.LUI))
+
+
 @pytest.mark.parametrize("op", [ALUControl.ADD])
 @pytest.mark.parametrize(
     "a,b",

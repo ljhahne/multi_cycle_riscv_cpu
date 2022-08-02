@@ -31,17 +31,28 @@ module alu( input  logic [31:0] a, b,
     always_comb
         case (alucontrol)
             3'b000:
-                result = sum;       // add
+                // add
+                result = sum;
             3'b001:
-                result = sum;       // subtract
+                // subtract
+                result = sum;
             3'b010:
-                result = a & b;     // and
+                // and
+                result = a & b;
             3'b011:
-                result = a | b;     // or
+                // or
+                result = a | b;
             3'b101:
-                result = sum[31];   // slt
+                // slt
+                result = sum[31];
             3'b110:
-                result = a << b[4:0]; // sll
+                 // sll
+                result = a << b[4:0];
+
+            3'b100:
+                //lui
+                result = b;
+
             default:
                 result = 32'bx;
         endcase

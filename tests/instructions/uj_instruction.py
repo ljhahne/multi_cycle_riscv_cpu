@@ -55,6 +55,18 @@ class JInstruction(UJInstructionBase):
         )
 
 
+class UInstruction(UJInstructionBase):
+    def __init__(self, op, rd, imm):
+        super().__init__(op, rd, imm)
+
+    def set_imm(self, imm):
+        return IMM(
+            (Bits(uint=imm, length=32)[:-12]).uint,
+            length=20,
+            signed=False,
+        )
+
+
 class JALop(JInstruction):
     def __init__(self, rd, imm, pc=0):
         super().__init__(0b1101111, rd, imm)
@@ -64,3 +76,8 @@ class JALop(JInstruction):
 
         # TODO
         # pc += sign_extend(imm[-21:])
+
+
+class LUIop(UInstruction):
+    def __init__(self, rd, imm):
+        super().__init__(0b0110111, rd, imm)

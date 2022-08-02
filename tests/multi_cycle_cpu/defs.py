@@ -11,6 +11,7 @@ class Op:
     sw = 0b0100011
     beq = 0b1100011
     jal = 0b1101111
+    u_type = 0b0110111
     # default requires only to be different than ops above
     default = 0b1111111
 
@@ -28,11 +29,12 @@ class Op:
 
 @dataclass(frozen=True)
 class ImmSrc:
-    i_type = 0b00
-    lw = 0b00
-    sw = 0b01
-    beq = 0b10
-    jal = 0b11
+    i_type = 0b000
+    lw = 0b000
+    sw = 0b001
+    beq = 0b010
+    jal = 0b011
+    u_type = 0b100
     default = XDEF
     r_type = XDEF
 
@@ -50,6 +52,7 @@ class States:
     S_ALUWB = 8
     S_BEQ = 9
     S_JAL = 10
+    S_U = 11
 
     def get_all(self):
         return [
@@ -73,6 +76,15 @@ class ALUControl:
     SUB = 1
     AND = 2
     OR = 3
+    LUI = 4
     SLT = 5
     SLL = 6
     X = XDEF
+
+
+@dataclass(frozen=True)
+class ALUop:
+    ADD = 0
+    SUB = 1
+    RI_TYPE = 2
+    U = 3

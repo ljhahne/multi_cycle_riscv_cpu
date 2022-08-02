@@ -2,7 +2,9 @@ import os
 import random
 
 import pytest
+from bitstring import Bits
 
+from tests import instructions
 from tests.instructions import *
 from tests.multi_cycle_cpu.defs import ImmSrc
 from tests.multi_cycle_cpu.models import (
@@ -73,4 +75,18 @@ def test_j_type(bit_31, bits_19_12, bit_20, bits_30_21):
 
     run_simulation(
         config, "test_extend", waveform_file, set_signals(instruction, ImmSrc.jal)
+    )
+
+
+@pytest.mark.parametrize(
+    "imm", [0b0, 0b11111111111111111111, 0b11111111111111111110, 0b01111111111111111111]
+)
+def test_lui_instruction(imm):
+    # rd dont'care
+    instruction = instructions.uj_instruction.LUIop(
+        rd=0, imm=Bits(uint=imm, length=20).uint
+    ).machine_code()
+
+    run_simulation(
+        config, "test_extend", waveform_file, set_signals(instruction, ImmSrc.u_type)
     )

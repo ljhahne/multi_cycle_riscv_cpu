@@ -1,7 +1,7 @@
 from bitstring import Bits
 
 from tests.instructions.sb_instruction import BEQop, BGEop, BGEUop, BLTop, BLTUop, BNEop
-from tests.multi_cycle_cpu.defs import XDEF, ALUControl, ImmSrc, Op, States
+from tests.multi_cycle_cpu.defs import XDEF, ALUControl, ALUop, ImmSrc, Op, States
 
 
 def state_register(state_next, reset):
@@ -33,8 +33,14 @@ def next_state(state, op):
         elif op == Op.beq:
             return States.S_BEQ
 
+        elif op == Op.u_type:
+            return States.S_U
+
         else:
             return States.S_FETCH
+
+    elif op == Op.u_type:
+        return States.S_ALUWB
 
     elif state == States.S_MEMADR:
         if op == Op.lw:
@@ -218,6 +224,21 @@ def output_logic(state):
         MemWrite = 0b0
         Branch = 0b0
 
+    elif state == States.S_U:
+        ALUSrcB = 0b10
+        aluOP = 0b100
+
+        ALUSrcA = 0b0
+        ResultSrc = 0b0
+        PCUpdate = 0b0
+
+        AdrSrc = 0b0
+        IRWrite = 0b0
+
+        RegWrite = 0b0
+        MemWrite = 0b0
+        Branch = 0b0
+
     else:
         ALUSrcA = 0b0
         ALUSrcB = 0b0
@@ -274,6 +295,9 @@ def fsm(op, reset):
     elif op == Op.beq:
         states_op = [States.S_BEQ]
 
+    elif op == Op.u_type:
+        states_op = [States.S_U, States.S_ALUWB]
+
     if not reset:
         states = states_base + states_op
 
@@ -283,15 +307,15 @@ def fsm(op, reset):
     return states
 
 
-def alu_control(opb5, funct3, funct7b5, ALUOp):
+def alu_control(opb5, funct3, funct7b5, aluOP):
 
-    if ALUOp == 0:
+    if aluOP == ALUop.ADD:
         return ALUControl.ADD
 
-    elif ALUOp == 1:
+    elif aluOP == ALUop.SUB:
         return ALUControl.SUB
 
-    elif ALUOp == 2:
+    elif aluOP == ALUop.RI_TYPE:
         if funct3 == 0:
             if (
                 (opb5 == 0 and funct7b5 == 0)
@@ -314,6 +338,9 @@ def alu_control(opb5, funct3, funct7b5, ALUOp):
 
         elif funct3 == 7:
             return ALUControl.AND
+
+    elif aluOP == ALUop.U:
+        return ALUControl.LUI
 
     return ALUControl.X
 
@@ -369,7 +396,6 @@ def extend(immsrc, instruction, length=32):
 
     elif immsrc == 2:
         # b type
-
         return (
             Bits(bin=str(int(instruction_b[0])) * 20)
             + Bits(bin=str(int(instruction_b[-8])))
@@ -387,6 +413,10 @@ def extend(immsrc, instruction, length=32):
             + instruction_b[-31:-21]
             + Bits(bin="0")
         ).uint
+
+    elif immsrc == 4:
+        # u type
+        return (instruction_b[:-12] + Bits(bin=str("0") * 12)).uint
 
     else:
         return XDEF
@@ -462,6 +492,17 @@ def instruction_immext_j(bit_31: int, bits_30_21: int, bit_20: int, bits_19_12: 
     return instruction.uint
 
 
+def instruction_immext_u(imm):
+    imm_b = Bits(bin=str(imm))
+
+    zeros = Bits(bin=str(0) * 12)
+
+    instruction = imm_b + zeros
+    assert instruction.length == 32
+
+    return instruction.uint
+
+
 # def bitwise_not(a):
 #     return 1 ^ a
 #
@@ -501,6 +542,9 @@ def alu(a: int, b: int, alucontrol: ALUControl, N=32):
 
     elif alucontrol == ALUControl.SLL:
         result = a << Bits(uint=b, length=N)[-4:].uint
+
+    elif alucontrol == ALUControl.LUI:
+        result = b
 
     length = Bits(bin=bin(result)).length
 
