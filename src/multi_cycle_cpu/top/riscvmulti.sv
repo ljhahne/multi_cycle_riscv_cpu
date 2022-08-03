@@ -17,8 +17,8 @@ module riscvmulti #(parameter WIDTH = 32) (
     );
 
     logic [WIDTH-1:0]   Instr;
-    logic [2:0] ALUControl;
-    logic [1:0] ALUSrcA, ALUSrcB, ImmSrc, ResultSrc;
+    logic [2:0] ALUControl, ImmSrc;
+    logic [1:0] ALUSrcA, ALUSrcB, ResultSrc;
     logic PCWrite, RegWrite;
     logic N, Z, C, V;
     

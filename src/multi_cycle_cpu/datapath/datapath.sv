@@ -4,7 +4,7 @@
 
 module datapath #(parameter WIDTH = 32)(  input  logic       clk,
             input  logic       reset,
-            input logic [1:0] ImmSrc,
+            input logic [2:0] ImmSrc,
             input logic [1:0] ALUSrcA, ALUSrcB,
             input logic [1:0] ResultSrc,
             input logic       AdrSrc,

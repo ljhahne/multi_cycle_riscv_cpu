@@ -22,7 +22,7 @@ module controller(
                     input logic Z,
                     input logic C,
                     input logic V,
-                    output logic [1:0] ImmSrc,
+                    output logic [2:0] ImmSrc,
                     output logic [1:0] ALUSrcA,
                     output logic [1:0] ALUSrcB,
                     output logic [1:0] ResultSrc,
