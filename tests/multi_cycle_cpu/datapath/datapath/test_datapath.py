@@ -120,3 +120,17 @@ def test_lw_instruction(Instruction):
         waveform_file,
         set_signals(instruction, ImmSrc.lw, rd1=4),
     )
+
+
+@pytest.mark.parametrize(
+    "imm", [0b0, 0b11111111111111111111, 0b11111111111111111110, 0b01111111111111111111]
+)
+def test_lui_instruction(imm):
+    instruction = instructions.uj_instruction.LUIop(rd=1, imm=imm)
+
+    run_simulation(
+        config,
+        "test_lui_instruction",
+        waveform_file,
+        set_signals(instruction, ImmSrc.u_type, rd1=4),
+    )
