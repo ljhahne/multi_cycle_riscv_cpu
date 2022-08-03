@@ -68,23 +68,7 @@ def signals_sll(request):
     return set_signals(request, ALUControl.SLL)
 
 
-@pytest.fixture(
-    params=[
-        # unknown ALUOp
-        (3, random.randint(0, 7), random.randint(0, 1), random.randint(0, 1)),
-        # unknown funct3
-        (2, 4, random.randint(0, 1), random.randint(0, 1)),
-    ]
-)
-def signals_default(request):
-    return set_signals(request, ALUControl.X)
-
-
 waveform_file = "ALUOp_{}_funct3_{}opb5_{}_funct7b5_{}_instruction_{}.vcd"
-
-
-def test_aludecoder_x(signals_default):
-    run_simulation(config, "test_aludecoder", waveform_file, signals_default)
 
 
 def test_aludecoder_sll(signals_sll):
