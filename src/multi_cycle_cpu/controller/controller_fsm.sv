@@ -205,6 +205,24 @@ module output_logic(input  statetype   state,
 
                 end
 
+                S_LUI:
+                begin
+                    ALUSrcB = 2'b01;
+                    aluOP = 2'b11;
+
+                    ALUSrcA = 2'b00;
+                    ResultSrc = 2'b00;
+                    AdrSrc = 1'b0;
+                    IRWrite = 1'b0;
+                    RegWrite = 1'b0;
+                    MemWrite = 1'b0;
+                    Branch = 1'b0;
+                    PCUpdate = 1'b0;
+
+
+                end
+
+
                 default:
                 begin
                     ALUSrcA = 2'b00;
@@ -245,6 +263,8 @@ module output_logic(input  statetype   state,
                         state_next = S_JAL;
                     if(op == beq_op)
                         state_next = S_BEQ;
+                    if(op == lui_op)
+                        state_next = S_LUI;
                 end
 
                 S_MEMADR:
@@ -259,6 +279,8 @@ module output_logic(input  statetype   state,
                 S_EXECUTEL:
                     state_next = S_ALUWB;
                 S_JAL:
+                    state_next = S_ALUWB;
+                S_LUI:
                     state_next = S_ALUWB;
                 S_BEQ:
                     state_next = S_FETCH;
