@@ -19,7 +19,6 @@ module instruction_decoder(input  opcodetype  op,
                 ImmSrc = 3'b000;
             jal_op          :
                 ImmSrc = 3'b011;
-
             lui_op            :
                 ImmSrc = 3'b100;
 
