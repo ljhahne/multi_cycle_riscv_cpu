@@ -3,7 +3,7 @@ import random
 
 import pytest
 
-from tests.multi_cycle_cpu.defs import ALUControl
+from tests.multi_cycle_cpu.defs import ALUControl, ALUop
 from tests.setup_tests import Config, init_waveforms, run_simulation
 
 config = Config(
@@ -24,6 +24,13 @@ def set_signals(request, instruction):
         "funct7b5": str(request.param[3]),
         "instruction": str(instruction),
     }
+
+
+@pytest.fixture(
+    params=[(ALUop.U, random.randint(0, 7), random.randint(0, 1), random.randint(0, 1))]
+)
+def signals_lui(request):
+    return set_signals(request, ALUControl.LUI)
 
 
 @pytest.fixture(
@@ -93,3 +100,7 @@ def test_aludecoder_or(signals_or):
 
 def test_aludecoder_slt(signals_slt):
     run_simulation(config, "test_aludecoder", waveform_file, signals_slt)
+
+
+def test_aludecoder_lui(signals_lui):
+    run_simulation(config, "test_aludecoder", waveform_file, signals_lui)
