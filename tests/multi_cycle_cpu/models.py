@@ -76,7 +76,7 @@ def output_logic(state):
         ResultSrc = 0b10
         AdrSrc = 0b0
         IRWrite = 0b1
-        aluOP = 0b00
+        aluOP = ALUop.ADD
         PCUpdate = 0b1
 
         RegWrite = 0b0
@@ -86,7 +86,7 @@ def output_logic(state):
     elif state == States.S_DECODE:
         ALUSrcA = 0b01
         ALUSrcB = 0b01
-        aluOP = 0b00
+        aluOP = ALUop.ADD
 
         ResultSrc = 0b00
         AdrSrc = 0b0
@@ -100,7 +100,7 @@ def output_logic(state):
     elif state == States.S_MEMADR:
         ALUSrcA = 0b10
         ALUSrcB = 0b01
-        aluOP = 0b00
+        aluOP = ALUop.ADD
 
         ResultSrc = 0b00
         AdrSrc = 0b0
@@ -113,7 +113,7 @@ def output_logic(state):
 
     elif state == States.S_MEMREAD:
         ResultSrc = 0b00
-        AdrSrc = 0b1
+        AdrSrc = ALUop.SUB
 
         ALUSrcA = 0b00
         ALUSrcB = 0b00
@@ -157,7 +157,7 @@ def output_logic(state):
 
         ALUSrcA = 0b10
         ALUSrcB = 0b00
-        aluOP = 0b10
+        aluOP = ALUop.RI_TYPE
 
         ResultSrc = 0b00
         AdrSrc = 0b0
@@ -171,7 +171,7 @@ def output_logic(state):
     elif state == States.S_EXECUTEL:
         ALUSrcA = 0b10
         ALUSrcB = 0b01
-        aluOP = 0b10
+        aluOP = ALUop.RI_TYPE
 
         ResultSrc = 0b00
         AdrSrc = 0b0
@@ -199,7 +199,7 @@ def output_logic(state):
     elif state == States.S_BEQ:
         ALUSrcA = 0b10
         ALUSrcB = 0b00
-        aluOP = 0b01
+        aluOP = ALUop.SUB
         ResultSrc = 0b00
         Branch = 0b1
 
@@ -214,7 +214,7 @@ def output_logic(state):
         ALUSrcA = 0b01
         ALUSrcB = 0b10
         ResultSrc = 0b00
-        aluOP = 0b00
+        aluOP = ALUop.ADD
         PCUpdate = 0b1
 
         AdrSrc = 0b0
@@ -225,8 +225,8 @@ def output_logic(state):
         Branch = 0b0
 
     elif state == States.S_U:
-        ALUSrcB = 0b10
-        aluOP = 0b100
+        ALUSrcB = 0b01
+        aluOP = ALUop.U
 
         ALUSrcA = 0b0
         ResultSrc = 0b0
@@ -416,6 +416,8 @@ def extend(immsrc, instruction, length=32):
 
     elif immsrc == 4:
         # u type
+        print("u type")
+        print(instruction_b.bin)
         return (instruction_b[:-12] + Bits(bin=str("0") * 12)).uint
 
     else:
