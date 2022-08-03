@@ -36,7 +36,7 @@ module alu_decoder(   input  logic       opb5,
             endcase
 
              2'b11:
-                ALUControl = 3'b011; //lui
+                ALUControl = 3'b100; //lui
 
             default:
                 ALUControl = 3'bxxx; // ???
