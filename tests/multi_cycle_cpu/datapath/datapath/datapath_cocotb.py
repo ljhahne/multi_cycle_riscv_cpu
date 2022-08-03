@@ -283,18 +283,58 @@ async def test_j_instruction(dut, period_ns=1):
             dut, fsm_state, reset, op, funct3, funct7b5, ImmSrc, instruction
         )
 
-    if fsm_state == States.S_FETCH or fsm_state == States.S_DECODE:
-        _, alu_result = test_fetch_decode(dut, fsm_state, instruction, ImmSrc, pc=pc)
+        if fsm_state == States.S_FETCH or fsm_state == States.S_DECODE:
+            _, alu_result = test_fetch_decode(
+                dut, fsm_state, instruction, ImmSrc, pc=pc
+            )
 
-    elif fsm_state == States.S_JAL:
-        datapath_tests.test_jal(dut, pc, alu_result)
+        elif fsm_state == States.S_JAL:
+            datapath_tests.test_jal(dut, pc, alu_result)
 
-    # # aluwb
-    elif fsm_state == States.S_ALUWB:
-        datapath_tests.test_aluwb(dut, pc + 4, instruction, registerfile)
+        # # aluwb
+        elif fsm_state == States.S_ALUWB:
+            datapath_tests.test_aluwb(dut, pc + 4, instruction, registerfile)
 
-    await RisingEdge(dut.clk)
-    await Timer(1, units="ns")
+        await RisingEdge(dut.clk)
+        await Timer(1, units="ns")
+
+
+@cocotb.test()
+async def test_lui_instruction(dut, period_ns=1):
+    (
+        op,
+        funct3,
+        funct7b5,
+        ImmSrc,
+        instruction,
+        registerfile,
+        memory,
+        fsm_states,
+        pc,
+        reset,
+    ) = await setup_test(dut, period_ns)
+
+    immext = XDEF
+
+    for fsm_state in fsm_states:
+        await assign_dut_state(
+            dut, fsm_state, reset, op, funct3, funct7b5, ImmSrc, instruction
+        )
+
+        if fsm_state == States.S_FETCH or fsm_state == States.S_DECODE:
+            print("DEBUG immsrc {}".format(ImmSrc))
+            immext, _ = test_fetch_decode(dut, fsm_state, instruction, ImmSrc, pc=pc)
+
+        elif fsm_state == States.S_U:
+
+            datapath_tests.test_lui(dut, immext)
+
+        # aluwb
+        elif fsm_state == States.S_ALUWB:
+            datapath_tests.test_aluwb(dut, immext, instruction, registerfile)
+
+        await RisingEdge(dut.clk)
+        await Timer(1, units="ns")
 
 
 @cocotb.test()
@@ -312,28 +352,28 @@ async def test_r_instruction(dut, period_ns=1):
         reset,
     ) = await setup_test(dut, period_ns)
 
-    rd1 = 0
-    rd2 = 0
+    rd1 = registerfile[get_rs1(instruction)]
+    rd2 = registerfile[get_rs2(instruction)]
 
     for fsm_state in fsm_states:
         await assign_dut_state(
             dut, fsm_state, reset, op, funct3, funct7b5, ImmSrc, instruction
         )
 
-    if fsm_state == States.S_FETCH or fsm_state == States.S_DECODE:
-        immext, _ = test_fetch_decode(
-            dut, fsm_state, instruction, ImmSrc, rd1=rd1, pc=pc
-        )
+        if fsm_state == States.S_FETCH or fsm_state == States.S_DECODE:
+            immext, _ = test_fetch_decode(
+                dut, fsm_state, instruction, ImmSrc, rd1=rd1, pc=pc
+            )
 
-    elif fsm_state == States.S_EXECUTER:
-        datapath_tests.test_ExecuteR(dut, rd1=rd1, rd2=rd2)
+        elif fsm_state == States.S_EXECUTER:
+            datapath_tests.test_ExecuteR(dut, rd1=rd1, rd2=rd2)
 
-    elif fsm_state == States.S_ALUWB:
-        result = datapath_tests.test_ExecuteR_post_edge(dut, instruction, rd1, rd2)
-        datapath_tests.test_aluwb(dut, result, instruction)
+        elif fsm_state == States.S_ALUWB:
+            result = datapath_tests.test_ExecuteR_post_edge(dut, instruction, rd1, rd2)
+            datapath_tests.test_aluwb(dut, result, instruction)
 
-    await RisingEdge(dut.clk)
-    await Timer(1, units="ns")
+        await RisingEdge(dut.clk)
+        await Timer(1, units="ns")
 
 
 @cocotb.test()

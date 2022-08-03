@@ -151,6 +151,13 @@ def test_jal(datapath, pc, alu_result):
     check_value(datapath.aluOutReg.q, alu_result)
 
 
+def test_lui(datapath, immext):
+    check_value(datapath.alu.b, immext)
+    check_value(datapath.alu.alucontrol, 4)
+    check_value(datapath.alu.result, immext)
+    check_value(datapath.aluOutReg.q, immext)
+
+
 def test_b_instructions(datapath, branch_target_address, rd1, rd2):
     N, Z, C, V = alu_flags(rd1, rd2, ALUControl.SUB)
 
