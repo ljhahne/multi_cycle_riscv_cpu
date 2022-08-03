@@ -7,7 +7,7 @@ from tests.multi_cycle_cpu.defs import XDEF, ImmSrc
 
 def check_value(value_model, value_expected):
     if not value_model.value.is_resolvable:
-        assert value_expected == XDEF
+        assert value_expected == XDEF, "dut x model {}".format(value_expected)
 
     else:
         assert value_model.value.integer == value_expected, "dut  {} model {}".format(
