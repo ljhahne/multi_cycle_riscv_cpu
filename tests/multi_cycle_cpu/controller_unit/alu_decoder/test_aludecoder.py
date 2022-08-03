@@ -35,7 +35,7 @@ def signals_lui(request):
 
 @pytest.fixture(
     params=[
-        (0, random.randint(0, 7), random.randint(0, 1), random.randint(0, 1)),
+        (ALUop.ADD, random.randint(0, 7), random.randint(0, 1), random.randint(0, 1)),
         (2, 0, 0, 0),
         (2, 0, 0, 1),
         (2, 0, 1, 0),
@@ -47,7 +47,7 @@ def signals_add(request):
 
 @pytest.fixture(
     params=[
-        (1, random.randint(0, 7), random.randint(0, 1), random.randint(0, 1)),
+        (ALUop.SUB, random.randint(0, 7), random.randint(0, 1), random.randint(0, 1)),
         (2, 0, 1, 1),
     ]
 )
@@ -55,22 +55,22 @@ def signals_sub(request):
     return set_signals(request, ALUControl.SUB)
 
 
-@pytest.fixture(params=[(2, 7, random.randint(0, 1), random.randint(0, 1))])
+@pytest.fixture(params=[(ALUop.RI_TYPE, 7, random.randint(0, 1), random.randint(0, 1))])
 def signals_and(request):
     return set_signals(request, ALUControl.AND)
 
 
-@pytest.fixture(params=[(2, 6, random.randint(0, 1), random.randint(0, 1))])
+@pytest.fixture(params=[(ALUop.RI_TYPE, 6, random.randint(0, 1), random.randint(0, 1))])
 def signals_or(request):
     return set_signals(request, ALUControl.OR)
 
 
-@pytest.fixture(params=[(2, 2, random.randint(0, 1), random.randint(0, 1))])
+@pytest.fixture(params=[(ALUop.RI_TYPE, 2, random.randint(0, 1), random.randint(0, 1))])
 def signals_slt(request):
     return set_signals(request, ALUControl.SLT)
 
 
-@pytest.fixture(params=[(2, 1, random.randint(0, 1), random.randint(0, 1))])
+@pytest.fixture(params=[(ALUop.RI_TYPE, 1, random.randint(0, 1), random.randint(0, 1))])
 def signals_sll(request):
     return set_signals(request, ALUControl.SLL)
 
