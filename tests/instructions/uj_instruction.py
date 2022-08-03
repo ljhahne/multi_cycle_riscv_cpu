@@ -60,8 +60,9 @@ class UInstruction(UJInstructionBase):
         super().__init__(op, rd, imm)
 
     def set_imm(self, imm):
+
         return IMM(
-            (Bits(uint=imm, length=32)[:-12]).uint,
+            (Bits(uint=imm, length=20)).uint,
             length=20,
             signed=False,
         )
