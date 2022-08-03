@@ -37,6 +37,7 @@ waveform_file = "instruction_decoder_op_{}ImmSrc_{}.vcd"
         (Op.beq, ImmSrc.beq),
         (Op.i_type, ImmSrc.i_type),
         (Op.jal, ImmSrc.jal),
+        (Op.u_type, ImmSrc.u_type),
         (Op.default, ImmSrc.default),
     ],
 )
