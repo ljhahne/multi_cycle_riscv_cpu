@@ -12,8 +12,6 @@ def state_register(state_next, reset):
 
 
 def next_state(state, op):
-
-    print("model state {}".format(state))
     if state == States.S_FETCH:
         return States.S_DECODE
 
@@ -39,7 +37,7 @@ def next_state(state, op):
         else:
             return States.S_FETCH
 
-    elif op == Op.u_type:
+    elif state == States.S_U:
         return States.S_ALUWB
 
     elif state == States.S_MEMADR:
