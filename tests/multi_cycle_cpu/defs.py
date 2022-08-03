@@ -23,6 +23,7 @@ class Op:
             self.sw,
             self.beq,
             self.jal,
+            self.u_type,
             self.default,
         ]
 
@@ -67,6 +68,7 @@ class States:
             self.S_ALUWB,
             self.S_BEQ,
             self.S_JAL,
+            self.S_U,
         ]
 
 
