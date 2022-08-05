@@ -1,0 +1,39 @@
+`ifndef FSM
+`define FSM
+
+
+`define FETCH_ADRSRC 1'b0
+`define FETCH_IRWRITE 1'b1
+`define FETCH_ALUSRCA 2'b00
+`define FETCH_ALUSRCB 2'b10
+`define FETCH_ALUOP 2'b00
+`define FETCH_RESULTSRC 2'b10
+`define FETCH_PCUPDATE 1'b1
+
+
+`define DECODE_ALUSRCA 2'b01
+`define DECODE_ALUSRCB 2'b01
+`define DECODE_ALUOP 2'b00
+
+
+`define MEMADR_ALUSRCA 2'b10
+`define MEMADR_ALUSRCB 2'b01
+`define MEMADR_ALUOP 2'b00
+
+`define EXECUTER_ALUSRCA 2'b10
+`define EXECUTER_ALUSRCB 2'b00
+`define EXECUTER_ALUOP 2'b10
+
+`define DEFAULT_ALUSRCA 2'b00
+`define DEFAULT_ALUSRCB 2'b00
+`define DEFAULT_RESULTSRC 2'b00
+`define DEFAULT_ADRSRC 1'b0
+`define DEFAULT_IRWRITE 1'b0
+`define DEFAULT_ALUOP 2'b00
+`define DEFAULT_PCUPDATE 1'b0
+`define DEFAULT_REGWRITE 1'b0
+`define DEFAULT_MEMWRITE 1'b0
+`define DEFAULT_BRANCH 1'b0
+
+
+`endif

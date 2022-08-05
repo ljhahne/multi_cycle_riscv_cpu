@@ -7,6 +7,7 @@ from tests.multi_cycle_cpu.defs import ALUControl, ALUop
 from tests.setup_tests import Config, init_waveforms, run_simulation
 
 config = Config(
+    INCLUDES=["src/multi_cycle_cpu/include/"],
     HDLFILES=["src/multi_cycle_cpu/controller/alu_decoder.sv"],
     TOPLEVEL="alu_decoder",
     WORK_DIR="src/multi_cycle_cpu/controller/",

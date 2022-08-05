@@ -1,6 +1,6 @@
 `timescale 1ns/1ps
 `include "riscv.vh"
-
+`include "fsm.vh"
 
 module state_register(input logic clk, input logic reset, input statetype state_next, output statetype state);
     always_ff@(posedge clk, posedge reset)
@@ -29,66 +29,65 @@ module output_logic(input  statetype   state,
             case(state)
                 S_FETCH :
                 begin
-                    ALUSrcA = 2'b00;
-                    ALUSrcB = 2'b10;
-                    ResultSrc = 2'b10;
-                    AdrSrc = 1'b0;
-                    IRWrite = 1'b1;
-                    aluOP = 2'b00;
-                    PCUpdate = 1'b1;
+                    ALUSrcA = `FETCH_ALUSRCA;
+                    ALUSrcB = `FETCH_ALUSRCB;
+                    ResultSrc = `FETCH_RESULTSRC;
+                    AdrSrc = `FETCH_ADRSRC;
+                    IRWrite = `FETCH_IRWRITE;
+                    aluOP = `FETCH_ALUOP;
+                    PCUpdate = `FETCH_PCUPDATE;
 
-                    RegWrite = 1'b0;
-                    MemWrite = 1'b0;
-                    Branch = 1'b0;
+                    RegWrite = `DEFAULT_REGWRITE;
+                    MemWrite = `DEFAULT_MEMWRITE;
+                    Branch = `DEFAULT_BRANCH;
 
                 end
 
                 S_DECODE :
                 begin
-                    ALUSrcA = 2'b01;
-                    ALUSrcB = 2'b01;
-                    aluOP = 2'b00;
+                    ALUSrcA = `DECODE_ALUSRCA;
+                    ALUSrcB = `DECODE_ALUSRCB;
+                    aluOP = `DECODE_ALUOP;
 
-                    ResultSrc = 2'b00;
-                    AdrSrc = 1'b0;
-                    IRWrite = 1'b0;
-                    RegWrite = 1'b0;
-                    MemWrite = 1'b0;
-                    Branch = 1'b0;
-                    PCUpdate = 1'b0;
+                    ResultSrc = `DEFAULT_RESULTSRC;
+                    AdrSrc = `DEFAULT_ADRSRC;
+                    IRWrite = `DEFAULT_IRWRITE;
+                    RegWrite = `DEFAULT_REGWRITE;
+                    MemWrite = `DEFAULT_MEMWRITE;
+                    Branch = `DEFAULT_BRANCH;
+                    PCUpdate = `DEFAULT_PCUPDATE;
 
                 end
 
                 S_MEMADR :
                 begin
-                    ALUSrcA = 2'b10;
-                    ALUSrcB = 2'b01;
-                    aluOP = 2'b00;
+                    ALUSrcA = `MEMADR_ALUSRCA;
+                    ALUSrcB = `MEMADR_ALUSRCB;
+                    aluOP = `MEMADR_ALUOP;
 
-                    ResultSrc = 2'b00;
-                    AdrSrc = 1'b0;
-                    IRWrite = 1'b0;
-                    RegWrite = 1'b0;
-                    MemWrite = 1'b0;
-                    Branch = 1'b0;
-                    PCUpdate = 1'b0;
+                    ResultSrc = `DEFAULT_RESULTSRC;
+                    AdrSrc = `DEFAULT_ADRSRC;
+                    IRWrite = `DEFAULT_IRWRITE;
+                    RegWrite = `DEFAULT_REGWRITE;
+                    MemWrite = `DEFAULT_MEMWRITE;
+                    Branch = `DEFAULT_BRANCH;
+                    PCUpdate = `DEFAULT_PCUPDATE;
 
                 end
 
                 S_EXECUTER :
                 begin
-                    ALUSrcA = 2'b10;
-                    ALUSrcB = 2'b00;
-                    aluOP = 2'b10;
+                    ALUSrcA = `EXECUTER_ALUSRCA;
+                    ALUSrcB = `EXECUTER_ALUSRCB;
+                    aluOP = `EXECUTER_ALUOP;
 
-                    ResultSrc = 2'b00;
-                    AdrSrc = 1'b0;
-                    IRWrite = 1'b0;
-                    RegWrite = 1'b0;
-                    MemWrite = 1'b0;
-                    Branch = 1'b0;
-                    PCUpdate = 1'b0;
-
+                    ResultSrc = `DEFAULT_RESULTSRC;
+                    AdrSrc = `DEFAULT_ADRSRC;
+                    IRWrite = `DEFAULT_IRWRITE;
+                    RegWrite = `DEFAULT_REGWRITE;
+                    MemWrite = `DEFAULT_MEMWRITE;
+                    Branch = `DEFAULT_BRANCH;
+                    PCUpdate = `DEFAULT_PCUPDATE;
 
                 end
 

@@ -8,6 +8,7 @@ from tests.multi_cycle_cpu.defs import ImmSrc
 from tests.setup_tests import Config, init_waveforms, run_simulation
 
 config = Config(
+    INCLUDES=["src/multi_cycle_cpu/include/"],
     HDLFILES=[
         "src/multi_cycle_cpu/datapath/datapath.sv",
         "src/multi_cycle_cpu/datapath/alu.sv",

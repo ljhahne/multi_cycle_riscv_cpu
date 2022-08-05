@@ -1,5 +1,7 @@
 `timescale 1ns/1ps
 
+`include "alu.vh"
+
 module alu_decoder(   input  logic       opb5,
                           input  logic [2:0] funct3,
                           input  logic       funct7b5,
@@ -12,31 +14,31 @@ module alu_decoder(   input  logic       opb5,
     always_comb
         case(ALUOp)
             2'b00:
-                ALUControl = 3'b000; // addition
+                ALUControl = `ALU_ADD;
             2'b01:
-                ALUControl = 3'b001; // subtraction
+                ALUControl = `ALU_SUB;
             2'b10:
             case(funct3) // R-type or I-type ALU
                 3'b000:
                     if (RtypeSub)
-                        ALUControl = 3'b001; // sub
+                        ALUControl = `ALU_SUB;
                     else
-                        ALUControl = 3'b000; // add, addi
+                        ALUControl = `ALU_ADD;
 
                 3'b001:
-                    ALUControl = 3'b110; // sll
+                    ALUControl = `ALU_SLL;
                 3'b010:
-                    ALUControl = 3'b101; // slt, slti
+                    ALUControl = `ALU_SLT; // slt, slti
                 3'b110:
-                    ALUControl = 3'b011; // or, ori
+                    ALUControl = `ALU_OR; // or, ori
                 3'b111:
-                    ALUControl = 3'b010; // and, andi
+                    ALUControl = `ALU_AND; // and, andi
                 default:
                     ALUControl = 3'bxxx; // ??
             endcase
 
              2'b11:
-                ALUControl = 3'b100; //lui
+                ALUControl = `ALU_LUI; //lui
 
             default:
                 ALUControl = 3'bxxx; // ???

@@ -1,5 +1,7 @@
 `timescale 1ns/1ps
 
+`include "alu.vh"
+
 module alu( input  logic [31:0] a, b,
             input  logic [2:0]  alucontrol,
             output logic [31:0] result,
@@ -30,31 +32,31 @@ module alu( input  logic [31:0] a, b,
 
     always_comb
         case (alucontrol)
-            3'b000:
+            `ALU_ADD:
                 // add
                 result = sum;
-            3'b001:
+            `ALU_SUB:
                 // subtract
                 result = sum;
-            3'b010:
+            `ALU_AND:
                 // and
                 result = a & b;
-            3'b011:
+            `ALU_OR:
                 // or
                 result = a | b;
-            3'b101:
+            `ALU_SLT:
                 // slt
                 result = sum[31];
-            3'b110:
+            `ALU_SLL:
                  // sll
                 result = a << b[4:0];
 
-            3'b100:
+            `ALU_LUI:
                 //lui
                 result = b;
 
             default:
-                result = 32'bx;
+                result = `ALU_DEFAULT;
         endcase
 
 endmodule

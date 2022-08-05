@@ -12,6 +12,7 @@ INT_MAX = 2147483647
 INT_MIN = -2147483648
 
 config = Config(
+    INCLUDES=["src/multi_cycle_cpu/include/"],
     HDLFILES=[
         "src/multi_cycle_cpu/datapath/alu.sv",
         "src/multi_cycle_cpu/datapath/aluflags.sv",

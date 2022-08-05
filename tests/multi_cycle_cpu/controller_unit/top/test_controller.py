@@ -25,13 +25,13 @@ test_dir = hdl_file
 
 
 config = Config(
+    INCLUDES=["src/multi_cycle_cpu/include/"],
     HDLFILES=[
         "src/multi_cycle_cpu/controller/controller.sv",
         "src/multi_cycle_cpu/controller/controller_fsm.sv",
         "src/multi_cycle_cpu/controller/alu_decoder.sv",
         "src/multi_cycle_cpu/controller/instruction_decoder.sv",
         "src/multi_cycle_cpu/controller/pc_write.sv",
-        "src/multi_cycle_cpu/controller/riscv.vh",
     ],
     TOPLEVEL=toplevel,
     WORK_DIR="src/multi_cycle_cpu/controller/",
