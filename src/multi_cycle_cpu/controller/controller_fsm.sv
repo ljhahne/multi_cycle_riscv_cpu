@@ -93,147 +93,144 @@ module output_logic(input  statetype   state,
 
                 S_EXECUTEL :
                 begin
-                    ALUSrcA = 2'b10;
-                    ALUSrcB = 2'b01;
-                    aluOP = 2'b10;
+                    ALUSrcA = `EXECUTEL_ALUSRCA;
+                    ALUSrcB = `EXECUTEL_ALUSRCB;
+                    aluOP = `EXECUTEL_ALUOP;
 
-                    ResultSrc = 2'b00;
-                    AdrSrc = 1'b0;
-                    IRWrite = 1'b0;
-                    RegWrite = 1'b0;
-                    MemWrite = 1'b0;
-                    Branch = 1'b0;
-                    PCUpdate = 1'b0;
+                    ResultSrc = `DEFAULT_RESULTSRC;
+                    AdrSrc = `DEFAULT_ADRSRC;
+                    IRWrite = `DEFAULT_IRWRITE;
+                    RegWrite = `DEFAULT_REGWRITE;
+                    MemWrite = `DEFAULT_MEMWRITE;
+                    Branch = `DEFAULT_BRANCH;
+                    PCUpdate = `DEFAULT_PCUPDATE;
 
                 end
 
                 S_JAL :
                 begin
-                    ALUSrcA = 2'b01;
-                    ALUSrcB = 2'b10;
-                    ResultSrc = 2'b00;
-                    aluOP = 2'b00;
-                    PCUpdate = 1'b1;
+                    ALUSrcA = `JAL_ALUSRCA;
+                    ALUSrcB = `JAL_ALUSRCB;
+                    ResultSrc = `JAL_RESULTSRC;
+                    aluOP = `JAL_ALUOP;
+                    PCUpdate = `JAL_PCUPDATE;
 
-                    AdrSrc = 1'b0;
-                    IRWrite = 1'b0;
-                    RegWrite = 1'b0;
-                    MemWrite = 1'b0;
-                    Branch = 1'b0;
+                    AdrSrc = `DEFAULT_ADRSRC;
+                    IRWrite = `DEFAULT_IRWRITE;
+                    RegWrite = `DEFAULT_REGWRITE;
+                    MemWrite = `DEFAULT_MEMWRITE;
+                    Branch = `DEFAULT_BRANCH;
 
                 end
 
                 S_BEQ :
                 begin
-                    ALUSrcA = 2'b10;
-                    ALUSrcB = 2'b00;
-                    aluOP = 2'b01;
-                    ResultSrc = 2'b00;
-                    Branch = 1'b1;
+                    ALUSrcA = `BEQ_ALUSRCA;
+                    ALUSrcB = `BEQ_ALUSRCB;
+                    aluOP = `BEQ_ALUOP;
+                    ResultSrc = `BEQ_RESULTSRC;
+                    Branch = `BEQ_BRANCH;
 
-                    AdrSrc = 1'b0;
-                    IRWrite = 1'b0;
-                    RegWrite = 1'b0;
-                    MemWrite = 1'b0;
-                    PCUpdate = 1'b0;
+                    AdrSrc = `DEFAULT_ADRSRC;
+                    IRWrite = `DEFAULT_IRWRITE;
+                    RegWrite = `DEFAULT_REGWRITE;
+                    MemWrite = `DEFAULT_MEMWRITE;
+                    PCUpdate = `DEFAULT_PCUPDATE;
 
                 end
 
                 S_MEMREAD :
                 begin
-                    ResultSrc = 2'b00;
-                    AdrSrc = 1'b1;
+                    ResultSrc = `MEMREAD_RESULTSRC;
+                    AdrSrc = `MEMREAD_ADRSRC;
 
-                    ALUSrcA = 2'b00;
-                    ALUSrcB = 2'b00;
-                    IRWrite = 1'b0;
-                    RegWrite = 1'b0;
-                    MemWrite = 1'b0;
-                    aluOP = 2'b00;
-                    Branch = 1'b0;
-                    PCUpdate = 1'b0;
+                    ALUSrcA = `DEFAULT_ALUSRCA;
+                    ALUSrcB = `DEFAULT_ALUSRCB;
+                    IRWrite = `DEFAULT_IRWRITE;
+                    RegWrite = `DEFAULT_REGWRITE;
+                    MemWrite = `DEFAULT_MEMWRITE;
+                    aluOP = `DEFAULT_ALUOP;
+                    Branch = `DEFAULT_BRANCH;
+                    PCUpdate = `DEFAULT_PCUPDATE;
 
                 end
 
                 S_MEMWRITE :
                 begin
-                    ResultSrc = 2'b00;
-                    AdrSrc = 1'b1;
-                    MemWrite = 1'b1;
+                    ResultSrc = `MEMWRITE_RESULTSRC;
+                    AdrSrc = `MEMWRITE_ADRSRC;
+                    MemWrite = `MEMWRITE_MEMWRITE;
 
-                    ALUSrcA = 2'b00;
-                    ALUSrcB = 2'b00;
-                    IRWrite = 1'b0;
-                    RegWrite = 1'b0;
-                    aluOP = 2'b00;
-                    Branch = 1'b0;
-                    PCUpdate = 1'b0;
+                    ALUSrcA = `DEFAULT_ALUSRCA;
+                    ALUSrcB = `DEFAULT_ALUSRCB;
+                    IRWrite = `DEFAULT_IRWRITE;
+                    RegWrite = `DEFAULT_REGWRITE;
+                    aluOP = `DEFAULT_ALUOP;
+                    Branch = `DEFAULT_BRANCH;
+                    PCUpdate = `DEFAULT_PCUPDATE;
 
                 end
 
                 S_ALUWB :
                 begin
-                    ResultSrc = 2'b00;
-                    RegWrite = 1'b1;
+                    ResultSrc = `ALUWB_RESULTSRC;
+                    RegWrite = `ALUWB_REGWRITE;
 
-                    ALUSrcA = 2'b00;
-                    ALUSrcB = 2'b00;
-                    AdrSrc = 1'b0;
-                    IRWrite = 1'b0;
-                    MemWrite = 1'b0;
-                    aluOP = 2'b00;
-                    Branch = 1'b0;
-                    PCUpdate = 1'b0;
+                    ALUSrcA = `DEFAULT_ALUSRCA;
+                    ALUSrcB = `DEFAULT_ALUSRCB;
+                    AdrSrc = `DEFAULT_ADRSRC;
+                    IRWrite = `DEFAULT_IRWRITE;
+                    MemWrite = `DEFAULT_MEMWRITE;
+                    aluOP = `DEFAULT_ALUOP;
+                    Branch = `DEFAULT_BRANCH;
+                    PCUpdate = `DEFAULT_PCUPDATE;
 
                 end
 
                 S_MEMWB :
                 begin
 
-                    ResultSrc = 2'b01;
-                    RegWrite = 1'b1;
+                    ResultSrc = `MEMWB_RESULTSRC;
+                    RegWrite = `MEMWB_REGWRITE;
 
-                    ALUSrcA = 2'b00;
-                    ALUSrcB = 2'b00;
-                    AdrSrc = 1'b0;
-                    IRWrite = 1'b0;
-                    MemWrite = 1'b0;
-                    aluOP = 2'b00;
-                    Branch = 1'b0;
-                    PCUpdate = 1'b0;
+                    ALUSrcA = `DEFAULT_ALUSRCA;
+                    ALUSrcB = `DEFAULT_ALUSRCB;
+                    AdrSrc = `DEFAULT_ADRSRC;
+                    IRWrite = `DEFAULT_IRWRITE;
+                    MemWrite = `DEFAULT_MEMWRITE;
+                    aluOP = `DEFAULT_ALUOP;
+                    Branch = `DEFAULT_BRANCH;
+                    PCUpdate = `DEFAULT_PCUPDATE;
 
                 end
 
                 S_LUI:
                 begin
-                    ALUSrcB = 2'b01;
-                    aluOP = 2'b11;
+                    ALUSrcB = `LUI_ALUSRCB;
+                    aluOP = `LUI_ALUOP;
 
-                    ALUSrcA = 2'b00;
-                    ResultSrc = 2'b00;
-                    AdrSrc = 1'b0;
-                    IRWrite = 1'b0;
-                    RegWrite = 1'b0;
-                    MemWrite = 1'b0;
-                    Branch = 1'b0;
-                    PCUpdate = 1'b0;
-
-
+                    ALUSrcA = `DEFAULT_ALUSRCA;
+                    ResultSrc = `DEFAULT_RESULTSRC;
+                    AdrSrc = `DEFAULT_ADRSRC;
+                    IRWrite = `DEFAULT_IRWRITE;
+                    RegWrite = `DEFAULT_REGWRITE;
+                    MemWrite = `DEFAULT_MEMWRITE;
+                    Branch = `DEFAULT_BRANCH;
+                    PCUpdate = `DEFAULT_PCUPDATE;
                 end
-
 
                 default:
                 begin
-                    ALUSrcA = 2'b00;
-                    ALUSrcB = 2'b00;
-                    ResultSrc = 2'b00;
-                    AdrSrc = 1'b0;
-                    IRWrite = 1'b0;
-                    RegWrite = 1'b0;
-                    MemWrite = 1'b0;
-                    aluOP = 2'b00;
-                    Branch = 1'b0;
-                    PCUpdate = 1'b0;
+                    ALUSrcA = `DEFAULT_ALUSRCA;
+                    ALUSrcB = `DEFAULT_ALUSRCB;
+                    ResultSrc = `DEFAULT_RESULTSRC;
+                    AdrSrc = `DEFAULT_ADRSRC;
+                    IRWrite = `DEFAULT_IRWRITE;
+                    RegWrite = `DEFAULT_REGWRITE;
+                    MemWrite = `DEFAULT_MEMWRITE;
+                    aluOP = `DEFAULT_ALUOP;
+                    Branch = `DEFAULT_BRANCH;
+                    PCUpdate = `DEFAULT_PCUPDATE;
                 end
 
             endcase

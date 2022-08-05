@@ -33,26 +33,19 @@ module alu( input  logic [31:0] a, b,
     always_comb
         case (alucontrol)
             `ALU_ADD:
-                // add
                 result = sum;
             `ALU_SUB:
-                // subtract
                 result = sum;
             `ALU_AND:
-                // and
                 result = a & b;
             `ALU_OR:
-                // or
                 result = a | b;
             `ALU_SLT:
-                // slt
                 result = sum[31];
             `ALU_SLL:
-                 // sll
                 result = a << b[4:0];
 
             `ALU_LUI:
-                //lui
                 result = b;
 
             default:
