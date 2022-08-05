@@ -11,6 +11,7 @@ hdl_file = "controller_fsm"
 test_dir = hdl_file
 
 config = Config(
+    INCLUDES=["src/multi_cycle_cpu/include/"],
     HDLFILES=["src/multi_cycle_cpu/controller/controller_fsm.sv"],
     TOPLEVEL=toplevel,
     WORK_DIR="src/multi_cycle_cpu/controller",

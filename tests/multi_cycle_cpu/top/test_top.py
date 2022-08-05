@@ -1,7 +1,7 @@
 from tests.setup_tests import Config, init_waveforms, run_simulation
 
 config = Config(
-    INCLUDES=["src/multi_cycle_cpu/controller/"],
+    INCLUDES=["src/multi_cycle_cpu/include/"],
     HDLFILES=[
         "src/multi_cycle_cpu/top/top.sv",
         "src/multi_cycle_cpu/top/mem.sv",

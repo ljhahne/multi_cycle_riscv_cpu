@@ -9,9 +9,9 @@ from tests.setup_tests import Config, init_waveforms, run_simulation
 toplevel = "instruction_decoder"
 
 config = Config(
+    INCLUDES=["src/multi_cycle_cpu/include/"],
     HDLFILES=[
         "src/multi_cycle_cpu/controller/instruction_decoder.sv",
-        "src/multi_cycle_cpu/controller/riscv.vh",
     ],
     TOPLEVEL=toplevel,
     WORK_DIR="src/multi_cycle_cpu/controller/",

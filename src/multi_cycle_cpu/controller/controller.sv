@@ -1,12 +1,3 @@
-// controller.sv
-//
-// This file is for HMC E85A Lab 5.
-// Place controller.tv in same computer directory as this file to test your multicycle controller.
-//
-// Starter code last updated by Ben Bracker (bbracker@hmc.edu) 1/14/21
-// - added opcodetype enum
-// - updated testbench and hash generator to accomodate don't cares as expected outputs
-// Solution code by ________ (________) ________
 
 `timescale 1ns/1ps
 `include "riscv.vh"

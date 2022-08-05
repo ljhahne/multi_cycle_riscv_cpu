@@ -16,6 +16,7 @@ from tests.multi_cycle_cpu.models import (
 from tests.setup_tests import Config, init_waveforms, run_simulation
 
 config = Config(
+    INCLUDES=["src/multi_cycle_cpu/include/"],
     HDLFILES=["src/multi_cycle_cpu/datapath/extend.sv"],
     TOPLEVEL="extend",
     WORK_DIR="src/multi_cycle_cpu/datapath/",

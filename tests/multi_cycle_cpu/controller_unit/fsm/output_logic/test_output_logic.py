@@ -9,6 +9,7 @@ from tests.setup_tests import Config, init_waveforms, run_simulation
 toplevel = "output_logic"
 
 config = Config(
+    INCLUDES=["src/multi_cycle_cpu/include/"],
     HDLFILES=["src/multi_cycle_cpu/controller/controller_fsm.sv"],
     TOPLEVEL=toplevel,
     WORK_DIR="src/multi_cycle_cpu/controller",
