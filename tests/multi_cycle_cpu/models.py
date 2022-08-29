@@ -1,7 +1,15 @@
 from bitstring import Bits
 
 from tests.instructions.sb_instruction import BEQop, BGEop, BGEUop, BLTop, BLTUop, BNEop
-from tests.multi_cycle_cpu.defs import XDEF, ALUControl, ALUop, ImmSrc, Op, States
+from tests.multi_cycle_cpu.defs import (
+    XDEF,
+    ALUControl,
+    ALUop,
+    ImmSrc,
+    Loadtype,
+    Op,
+    States,
+)
 
 
 def state_register(state_next, reset):
@@ -779,3 +787,32 @@ def branch_pc_write(Instruction, rd1, rd2, N=32):
         return Bits(int=rd1, length=N).uint >= Bits(int=rd2, length=N).uint
 
     return 0
+
+
+def load_extend(ReadData, loadtype, length=32):
+    if loadtype == Loadtype.lb or loadtype == Loadtype.lbu:
+        n_bits = 8
+
+    elif loadtype == Loadtype.lh or loadtype == Loadtype.lhu:
+        n_bits = 16
+
+    elif loadtype == Loadtype.lw:
+        return ReadData
+
+    else:
+        raise ValueError("Invalid LoadType {}".format(loadtype))
+
+    bits = Bits(
+        bin=(length - n_bits) * "0" + Bits(uint=ReadData, length=length)[-n_bits:].bin
+    )
+
+    if loadtype == Loadtype.lbu or loadtype == Loadtype.lhu:
+        bit_signed = "0"
+
+    else:
+        bit_signed = int(bits[-n_bits])
+
+    # assemble extended Data
+    Data = Bits(bin=(length - n_bits) * str(bit_signed) + bits[-n_bits:].bin).uint
+
+    return Data
