@@ -6,6 +6,7 @@ from tests.multi_cycle_cpu.defs import (
     ALUControl,
     ALUop,
     ImmSrc,
+    LoadFunct3,
     Loadtype,
     Op,
     States,
@@ -816,3 +817,24 @@ def load_extend(ReadData, loadtype, length=32):
     Data = Bits(bin=(length - n_bits) * str(bit_signed) + bits[-n_bits:].bin).uint
 
     return Data
+
+
+def load_decoder(funct3):
+    loadtype = XDEF
+
+    if funct3 == LoadFunct3.flb:
+        loadtype = Loadtype.lb
+
+    elif funct3 == LoadFunct3.flh:
+        loadtype = Loadtype.lh
+
+    elif funct3 == LoadFunct3.flw:
+        loadtype = Loadtype.lw
+
+    elif funct3 == LoadFunct3.flbu:
+        loadtype = Loadtype.lbu
+
+    elif funct3 == LoadFunct3.flhu:
+        loadtype = Loadtype.lhu
+
+    return loadtype

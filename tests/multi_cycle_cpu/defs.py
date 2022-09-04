@@ -4,6 +4,24 @@ XDEF = -1
 
 
 @dataclass(frozen=True)
+class Loadtype:
+    lb = 0b000
+    lh = 0b001
+    lw = 0b010
+    lbu = 0b011
+    lhu = 0b100
+
+
+@dataclass(frozen=True)
+class LoadFunct3:
+    flb = 0b000
+    flh = 0b001
+    flw = 0b010
+    flbu = 0b100
+    flhu = 0b101
+
+
+@dataclass(frozen=True)
 class Op:
     r_type = 0b0110011
     i_type = 0b0010011
