@@ -19,3 +19,11 @@ b_instructions = [
 s_instructions = [
     sb_instruction.SWop,
 ]
+
+load_instructions = [
+    i_instruction.LBop,
+    i_instruction.LBUop,
+    i_instruction.LHop,
+    i_instruction.LHUop,
+    i_instruction.LWop,
+]
