@@ -1,6 +1,7 @@
 
 `timescale 1ns/1ps
 
+`include "load.vh"
 
 module datapath #(parameter WIDTH = 32)(  input  logic       clk,
             input  logic       reset,
@@ -22,16 +23,17 @@ module datapath #(parameter WIDTH = 32)(  input  logic       clk,
                                            );
 
 
-    logic [WIDTH-1:0] PC, OldPC, Result, Data, rd1, rd2, A, ImmExt, SrcA, SrcB, ALUResult, ALUOut;
+    logic [WIDTH-1:0] PC, OldPC, Result, Data, rd1, rd2, A, ImmExt, SrcA, SrcB, ALUResult, ALUOut, w_load_extend;
 
     flopenr #(WIDTH) pcReg(.clk(clk), .reset(reset), .en(PCWrite), .d(Result), .q(PC));
 
 
     mux2 #(WIDTH)  pcMux(.d0(PC), .d1(Result), .s(AdrSrc), .y(DataAdr));
 
-    // to external memory
 
-    flop #(WIDTH) dataReg(.clk(clk), .d(ReadData), .q(Data));
+    load_extend loadExtend(.loadtype(3'b010), .ReadData(ReadData), .Data(w_load_extend));
+
+    flop #(WIDTH) dataReg(.clk(clk), .d(w_load_extend), .q(Data));
 
     flopenrdual #(WIDTH) instructionReg(
                     .clk(clk),
