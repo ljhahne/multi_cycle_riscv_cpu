@@ -33,6 +33,6 @@ jobs:
     - name: Test Reporter
       uses: dorny/test-reporter@v1
       with:
-        name: Adder Tests
+        name: Test Results
         path: test-cocotb.xml
         reporter: java-junit
